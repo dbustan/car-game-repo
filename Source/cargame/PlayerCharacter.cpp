@@ -62,7 +62,7 @@ void APlayerCharacter::Tick(float DeltaTime)
 		/*DrawDebugLine(GetWorld(), StartPos, EndLocation, FColor::Red, false, 5.0f, 0, 3.0f);*/
 		/*FString test = FString(Hit.ToString());
 		GEngine->AddOnScreenDebugMessage(-1, 20.f, FColor::Red, FString::Printf(TEXT("%s"), *test));*/
-		/*UE_LOG(LogTemp, Warning, TEXT("%s"), *test);*/
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *test);
 		AInteractables* InteractableObj = Cast<AInteractables>(Hit.GetActor());
 		if (InteractableObj) {
 			InteractableObj->Interact();

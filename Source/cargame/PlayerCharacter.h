@@ -51,6 +51,7 @@ protected:
 	class APhone* PhoneObj;
 
 	UPROPERTY(EditDefaultsOnly)
+	//idk why its like this but this was the only way to spawn the phone
 	TSubclassOf<class APhone> PhoneToSpawn;
 public:
 	
@@ -71,5 +72,4 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
 };
