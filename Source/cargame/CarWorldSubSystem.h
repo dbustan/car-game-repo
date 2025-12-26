@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Road.h"
 #include "Subsystems/WorldSubsystem.h"
+#include "Tickable.h"
 #include  "Kismet/GameplayStatics.h"
 #include "Components/ArrowComponent.h"
 #include "Subsystems/SubsystemCollection.h"
@@ -14,7 +15,7 @@
  * 
  */
 UCLASS()
-class CARGAME_API UCarWorldSubSystem : public UWorldSubsystem
+class CARGAME_API UCarWorldSubSystem : public UWorldSubsystem, public FTickableGameObject
 {
 	GENERATED_BODY()
 protected:
@@ -23,5 +24,6 @@ public:
 
 protected:
 	virtual void Initialize(FSubsystemCollectionBase& Collection) override;
+	virtual void Tick(float DeltaTime) override;
 	void OnLevelStart();
 };

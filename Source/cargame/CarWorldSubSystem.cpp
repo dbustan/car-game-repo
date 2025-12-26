@@ -15,6 +15,10 @@ void UCarWorldSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 }
 
+void UCarWorldSubSystem::Tick(float DeltaTime)
+{
+}
+
 void UCarWorldSubSystem::OnLevelStart()
 {
 	
