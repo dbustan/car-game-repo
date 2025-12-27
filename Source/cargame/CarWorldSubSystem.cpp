@@ -17,6 +17,14 @@ void UCarWorldSubSystem::Initialize(FSubsystemCollectionBase& Collection)
 
 void UCarWorldSubSystem::Tick(float DeltaTime)
 {
+	APawn *PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
+	FVector ActorLocation = PlayerPawn->GetActorLocation();
+	float SpawnDistance = (ActorLocation - Spawn.GetLocation()).Size();
+
+	if (SpawnDistance < 300000) {
+		/*GetWorld()->SpawnActor<ARoad>(Spawn, );*/
+	}
+
 }
 
 void UCarWorldSubSystem::OnLevelStart()

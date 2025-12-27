@@ -7,6 +7,7 @@
 #include "Subsystems/WorldSubsystem.h"
 #include "Tickable.h"
 #include  "Kismet/GameplayStatics.h"
+#include "FVector.h"
 #include "Components/ArrowComponent.h"
 #include "Subsystems/SubsystemCollection.h"
 #include "CarWorldSubSystem.generated.h"
