@@ -16,13 +16,6 @@ APlayerCharacter::APlayerCharacter()
 	MotorcycleBase->SetupAttachment(RootComponent);
 	MotorcycleWheel->SetupAttachment(RootComponent);
 	PhonePos->SetupAttachment(RootComponent);
-
-	
-	
-	
-	
-
-	/*Phone->SetupAttachment(RootComponent);*/
 }
 
 AActor* APlayerCharacter::SpawnPhone() {
@@ -41,8 +34,8 @@ AActor* APlayerCharacter::SpawnPhone() {
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	SpawnPhone();
+	MaxSpeed = 2;
+	/*SpawnPhone();*/
 }
 
 
@@ -77,9 +70,9 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	
 	if (APlayerController* pController = Cast<APlayerController>(Controller)) {
 		PlayerController = pController;
-		PlayerController->bShowMouseCursor = true;
+		/*PlayerController->bShowMouseCursor = true;
 		PlayerController->bEnableClickEvents = true;
-		PlayerController->bEnableMouseOverEvents = true;
+		PlayerController->bEnableMouseOverEvents = true;*/
 
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(pController->GetLocalPlayer())) {
 			Subsystem->AddMappingContext(inputMapping, 0);
@@ -87,22 +80,21 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		}
 	}
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
-		
-		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &APlayerCharacter::Interact);
+		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &APlayerCharacter::SpeedUp);
 		/*EnhancedInputComponent->BindAction(MouseInteractionCheck, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractionCheck);*/
-
 	}
 }
-
-void APlayerCharacter::Interact(const FInputActionValue& InputValue) {
-
-	
+void APlayerCharacter::SetPlayerMaxSpeed(float CurrentGameSpeed)
+{
+	MaxSpeed = 2 * CurrentGameSpeed;
+}
+void APlayerCharacter::SpeedUp(const FInputActionValue& InputValue) {
+	Acceleration += GetWorld()->GetDeltaSeconds();
+	Acceleration = FMath::Clamp(Acceleration, 0, 1);
+	CurrentSpeed = FMath::Lerp(DefaultSpeed, MaxSpeed, Acceleration);
+	UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentSpeed);
 }
 
-void APlayerCharacter::InteractionCheck(const FInputActionValue& InputValue) {
-	
-	
-}
 
 
 

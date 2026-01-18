@@ -29,6 +29,10 @@ protected:
 	class UInputMappingContext* inputMapping;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EnhancedInput")
 	class UInputAction* InteractAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EnhancedInput")
+	class UInputAction* SpeedUpAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EnhancedInput")
+	class UInputAction* SlowDownAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EnhancedInput")
 	class UInputAction* MouseInteractionCheck;
@@ -47,8 +51,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Phone")
 	class USceneComponent* PhonePos;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Phone")
-	class APhone* PhoneObj;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float MaxSpeed = 2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float CurrentSpeed = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float DefaultSpeed = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float Acceleration = 0;
 
 	UPROPERTY(EditDefaultsOnly)
 	//idk why its like this but this was the only way to spawn the phone
@@ -62,9 +72,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	void Interact(const FInputActionValue& InputValue);
-	void InteractionCheck(const FInputActionValue& InputValue);
+	void SpeedUp(const FInputActionValue& InputValue);
 	AActor* SpawnPhone();
+	
 	
 public:	
 	// Called every frame
@@ -72,4 +82,6 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void SetPlayerMaxSpeed(float CurrentGameSpeed);
 };

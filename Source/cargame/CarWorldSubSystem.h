@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Road.h"
 #include "Subsystems/WorldSubsystem.h"
 #include "Tickable.h"
 #include  "Kismet/GameplayStatics.h"
+#include "CarSpawner.h"
 #include "Components/ArrowComponent.h"
 #include "Subsystems/SubsystemCollection.h"
 #include "CarWorldSubSystem.generated.h"
@@ -14,15 +14,19 @@
 /**
  * 
  */
-UCLASS()
+UCLASS(Abstract, Blueprintable)
 class CARGAME_API UCarWorldSubSystem : public UWorldSubsystem, public FTickableGameObject
 {
 	GENERATED_BODY()
 protected:
 	FTransform Spawn;
-
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<class ARoad> RoadToSpawn;
+	TSubclassOf<ACarSpawner> CarSpawnerBP;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Car")
+	class ACarSpawner* CarSpawnerActor;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Car")
+	FVector CarSpawnerLocation = FVector(-240.0, 130.0, 170.0);
+	/*TSubclassOf<class ARoad> RoadToSpawn;*/
 	bool RoadSpawned;
 public:
 
@@ -36,4 +40,6 @@ protected:
 	virtual TStatId GetStatId() const override { RETURN_QUICK_DECLARE_CYCLE_STAT(UCarWorldSubSystem, STATGROUP_Tickables); }
 	virtual UWorld* GetTickableGameObjectWorld() const override { return GetWorld(); }
 	void OnLevelStart();
+private: 
+	void CarSpawnerInitialization();
 };
