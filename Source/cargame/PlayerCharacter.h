@@ -9,8 +9,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "EnhancedInputComponent.h"
 #include "InputActionValue.h"
-#include "Interactables.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Phone.h"
+#include "Interactables.h"
 #include "Engine/World.h"
 #include "PlayerCharacter.generated.h"
 UCLASS()
@@ -33,7 +34,7 @@ protected:
 	class UInputAction* SpeedUpAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EnhancedInput")
 	class UInputAction* SlowDownAction;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EnhancedInput")
 	class UInputAction* MouseInteractionCheck;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerBike")
@@ -50,9 +51,10 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Phone")
 	class USceneComponent* PhonePos;
-
+	UPROPERTY(BlueprintInternalUseOnly)
+	UCharacterMovementComponent* CharacterMovementComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	float MaxSpeed = 2;
+	float MaxSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float CurrentSpeed = 0;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
@@ -60,6 +62,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float Acceleration = 0;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	bool isMoving;
 	UPROPERTY(EditDefaultsOnly)
 	//idk why its like this but this was the only way to spawn the phone
 	TSubclassOf<class APhone> PhoneToSpawn;
@@ -73,6 +77,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void SpeedUp(const FInputActionValue& InputValue);
+	void ReturnToNormalSpeed(const FInputActionValue& InputValue);
 	AActor* SpawnPhone();
 	
 	
@@ -84,4 +89,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void SetPlayerMaxSpeed(float CurrentGameSpeed);
+	
+protected:
+	void HandleInteractions();
+
+	void HandleDefaultMovement();
 };

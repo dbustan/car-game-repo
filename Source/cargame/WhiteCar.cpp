@@ -34,14 +34,14 @@ void AWhiteCar::Tick(float DeltaTime)
         bool bIsPaused = SkeletalMesh->bPauseAnims;
 
         // Log every 1 second to avoid spam
-        static float LogTimer = 0;
-        LogTimer += DeltaTime;
-        if (LogTimer >= 1.0f)
-        {
-            UE_LOG(LogTemp, Warning, TEXT("Car Anim Running: %s | Paused: %d"),
-                *AnimInst->GetName(), bIsPaused);
-            LogTimer = 0;
-        }
+        // static float LogTimer = 0;
+        // LogTimer += DeltaTime;
+        // if (LogTimer >= 1.0f)
+        // {
+        //     UE_LOG(LogTemp, Warning, TEXT("Car Anim Running: %s | Paused: %d"),
+        //         *AnimInst->GetName(), bIsPaused);
+        //     LogTimer = 0;
+        // }
     }
     else
     {

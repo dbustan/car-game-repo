@@ -19,7 +19,7 @@ void ACarSpawner::BeginPlay()
 	EndPos = StartPos.DownVector * 1000;
 	CurrentGameSpeed = 1;
 
-	SpawnCar();
+	
 }
 
 // Called every frame

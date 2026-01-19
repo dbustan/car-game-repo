@@ -22,7 +22,7 @@ AActor* APlayerCharacter::SpawnPhone() {
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Instigator = this;
 	AActor* SpawnedActor = GetWorld()->SpawnActor<AInteractables>(PhoneToSpawn, FVector::ZeroVector, PhonePos->GetComponentRotation(), SpawnParams);
-	if (SpawnedActor == NULL) {
+	if (!SpawnedActor) {
 		UE_LOG(LogTemp, Warning, TEXT("WWOFAWD"));
 	}
 	SpawnedActor->AttachToComponent(PhonePos, FAttachmentTransformRules(EAttachmentRule::SnapToTarget, true));
@@ -34,16 +34,52 @@ AActor* APlayerCharacter::SpawnPhone() {
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	MaxSpeed = 2;
+	CharacterMovementComponent = GetCharacterMovement();
+	DefaultSpeed = 300.0f;
+	CharacterMovementComponent->MaxWalkSpeed = DefaultSpeed;
+	MaxSpeed = 1000.0f;
 	/*SpawnPhone();*/
 }
 
 
 
-// Called every frame
+
 void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	HandleInteractions();
+	HandleDefaultMovement();
+	
+}
+
+
+// Called to bind functionality to input
+void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+{
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
+	
+	if (APlayerController* pController = Cast<APlayerController>(Controller)) {
+		PlayerController = pController;
+		/*PlayerController->bShowMouseCursor = true;
+		PlayerController->bEnableClickEvents = true;
+		PlayerController->bEnableMouseOverEvents = true;*/
+
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(pController->GetLocalPlayer())) {
+			Subsystem->AddMappingContext(inputMapping, 0);
+		}
+	}
+	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
+		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &APlayerCharacter::SpeedUp);
+		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &APlayerCharacter::ReturnToNormalSpeed);
+	}
+}
+void APlayerCharacter::SetPlayerMaxSpeed(float CurrentGameSpeed)
+{
+	MaxSpeed = MaxSpeed * CurrentGameSpeed;
+}
+
+void APlayerCharacter::HandleInteractions()
+{
 	FVector MouseStartingPos;
 	FVector WorldDirection;
 	FVector EndLocation;
@@ -63,36 +99,31 @@ void APlayerCharacter::Tick(float DeltaTime)
 	}
 }
 
-// Called to bind functionality to input
-void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void APlayerCharacter::HandleDefaultMovement()
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	
-	if (APlayerController* pController = Cast<APlayerController>(Controller)) {
-		PlayerController = pController;
-		/*PlayerController->bShowMouseCursor = true;
-		PlayerController->bEnableClickEvents = true;
-		PlayerController->bEnableMouseOverEvents = true;*/
+	if (!isMoving)
+	{
+		Acceleration -= GetWorld()->GetDeltaSeconds();
+		Acceleration = FMath::Clamp(Acceleration, 0, 1);
+		CharacterMovementComponent->MaxWalkSpeed = FMath::Lerp(DefaultSpeed, MaxSpeed, Acceleration);
+		AddMovementInput(GetActorForwardVector(), true);
+		// UE_LOG(LogTemp, Warning, TEXT("Slowing down - Current Speed %f"), CharacterMovementComponent->MaxWalkSpeed);
+	}
+}
 
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(pController->GetLocalPlayer())) {
-			Subsystem->AddMappingContext(inputMapping, 0);
-			/*UE_LOG(LogTemp, Warning, TEXT("whow"));*/
-		}
-	}
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
-		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &APlayerCharacter::SpeedUp);
-		/*EnhancedInputComponent->BindAction(MouseInteractionCheck, ETriggerEvent::Triggered, this, &APlayerCharacter::InteractionCheck);*/
-	}
-}
-void APlayerCharacter::SetPlayerMaxSpeed(float CurrentGameSpeed)
-{
-	MaxSpeed = 2 * CurrentGameSpeed;
-}
 void APlayerCharacter::SpeedUp(const FInputActionValue& InputValue) {
+	isMoving = true;
 	Acceleration += GetWorld()->GetDeltaSeconds();
 	Acceleration = FMath::Clamp(Acceleration, 0, 1);
-	CurrentSpeed = FMath::Lerp(DefaultSpeed, MaxSpeed, Acceleration);
-	UE_LOG(LogTemp, Warning, TEXT("%f"), CurrentSpeed);
+	CharacterMovementComponent->MaxWalkSpeed = FMath::Lerp(DefaultSpeed, MaxSpeed, Acceleration);
+	AddMovementInput(GetActorForwardVector(), InputValue.Get<bool>());
+	// UE_LOG(LogTemp, Warning, TEXT("Speeding up - Current Walk speed %f"), CharacterMovementComponent->MaxWalkSpeed);
+}
+
+void APlayerCharacter::ReturnToNormalSpeed(const FInputActionValue& InputValue)
+{
+	
+	isMoving = false;
 }
 
 
