@@ -15,8 +15,7 @@ ACarSpawner::ACarSpawner()
 void ACarSpawner::BeginPlay()
 {
 	Super::BeginPlay();
-	StartPos = this->GetActorLocation();
-	EndPos = StartPos.DownVector * 1000;
+	
 	CurrentGameSpeed = 1;
 
 	
@@ -37,7 +36,8 @@ void ACarSpawner::SetGameSpeed(float NewSpeed)
 void ACarSpawner::SpawnCar()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Reaching Spawn car"));
-	
+	StartPos = this->GetActorLocation();
+	EndPos = StartPos.DownVector * 1000;
 	if (GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos, ECC_Visibility)) {
 		UE_LOG(LogTemp, Warning, TEXT("Reaching Spawn car"));
 		FActorSpawnParameters SpawnParams;

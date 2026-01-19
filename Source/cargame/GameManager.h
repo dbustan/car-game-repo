@@ -19,7 +19,7 @@ protected:
 	class ACarSpawner* CarSpawnerActor;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CarSpawner")
 	FVector CarSpawnerLocation = FVector(-240.0, 130.0, 170.0);
-
+	FTimerHandle CarSpawnerTimer;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game")
 	float CurrentGameDifficulty;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CarSpawner")
@@ -47,5 +47,6 @@ public:
 private:
 	void CarSpawnerInitialization();
 	void InitPlayer();
+	void SpawnCar();
 	/*void PlayerSpawnInitialization();*/
 };

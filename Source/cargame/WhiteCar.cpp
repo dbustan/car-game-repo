@@ -8,43 +8,54 @@ AWhiteCar::AWhiteCar() : Super()
 	
 	PlayerDetection = CreateDefaultSubobject<UBoxComponent>(TEXT("PlayerDetectionBox"));
 	PlayerDetection->SetupAttachment(CarScene);
-
+	PlayerDetection->SetCollisionResponseToAllChannels(ECR_Ignore);
+	PlayerDetection->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
 }
 
 void AWhiteCar::BeginPlay()
 {
     Super::BeginPlay();
-    // 2. Tell the mesh to calculate its movement for 'zero' time 
-    // This effectively "primes the pump" for the animation to start
-    //SkeletalMesh->TickAnimation(0.0f, false);
-    //SkeletalMesh->RefreshBoneTransforms();
+	PlayerDetection->OnComponentBeginOverlap.AddDynamic(this, &AWhiteCar::OverlapBegin);
+	Speed = 300.0f;
+}
 
-    //// 3. Just in case it spawned in a 'paused' state
-    //SkeletalMesh->bPauseAnims = false;
-    //UE_LOG(LogTemp, Warning, TEXT("help"));
+void AWhiteCar::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	IsGoingIn = ShouldHappen(100);
+	if (IsGoingIn)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Going in"));
+		RotateCar();
+		GetWorldTimerManager().SetTimer(RotationTimer, this, &AWhiteCar::RotateCar, 0.5, false);
+	}
+}
+bool AWhiteCar::ShouldHappen(int percentage)
+{
+	return (FMath::RandRange(1, 100/percentage)==1?true:false);
+}
+
+void AWhiteCar::RotateCar()
+{
+	RotationCount++;
+	if (RotationCount <= 3)
+	{
+		FRotator NewRotation = FRotator(0, 10, 0);
+		this->AddActorLocalRotation(NewRotation);
+		GetWorldTimerManager().SetTimer(RotationTimer, this, &AWhiteCar::RotateCar, 0.5, false);
+	}
+	
 }
 
 void AWhiteCar::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-    UAnimInstance* AnimInst = SkeletalMesh->GetAnimInstance();
-    if (AnimInst)
-    {
-        float CurrentTime = AnimInst->GetWorld()->GetTimeSeconds();
-        bool bIsPaused = SkeletalMesh->bPauseAnims;
-
-        // Log every 1 second to avoid spam
-        // static float LogTimer = 0;
-        // LogTimer += DeltaTime;
-        // if (LogTimer >= 1.0f)
-        // {
-        //     UE_LOG(LogTemp, Warning, TEXT("Car Anim Running: %s | Paused: %d"),
-        //         *AnimInst->GetName(), bIsPaused);
-        //     LogTimer = 0;
-        // }
-    }
-    else
-    {
-        UE_LOG(LogTemp, Error, TEXT("CRITICAL: No Anim Instance found on %s"), *GetName());
-    }
+	FVector Location = GetActorLocation();
+	Location += GetActorForwardVector() * Speed * DeltaTime;
+    SetActorLocation(Location);
+	UE_LOG(LogTemp, Warning, TEXT("Location: %s"), *Location.ToString());
 }
+
+
+
+

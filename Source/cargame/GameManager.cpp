@@ -19,14 +19,15 @@ void AGameManager::BeginPlay()
 	Super::BeginPlay();
 	CarSpawnerInitialization();
 	InitPlayer();
-	CarSpawnerOffset = -7000.0f;
+	CarSpawnerOffset = -5000.0f;
 	/*PlayerSpawnInitialization();*/
 	/*float CurrentGameDifficulty = 1;*/
 	FVector PlayerLocation = PlayerActor->GetActorLocation();
 	FVector CurrentCarSpawnerLoc = CarSpawnerActor->GetActorLocation();
 	FVector NewCarSpawnerLoc = FVector(CurrentCarSpawnerLoc.X, PlayerLocation.Y + CarSpawnerOffset, CurrentCarSpawnerLoc.Z);
 	CarSpawnerActor->SetActorLocation(NewCarSpawnerLoc);
-	CarSpawnerActor->SpawnCar();
+	SpawnCar();
+	GetWorldTimerManager().SetTimer(CarSpawnerTimer, this, &AGameManager::SpawnCar, FMath::FRandRange(1.0, 3.0), true);
 }
 
 // Called every frame
@@ -36,8 +37,8 @@ void AGameManager::Tick(float DeltaTime)
 	FVector PlayerLocation = PlayerActor->GetActorLocation();
 	FVector CurrentCarSpawnerLoc = CarSpawnerActor->GetActorLocation();
 	FVector NewCarSpawnerLoc = FVector(CurrentCarSpawnerLoc.X, PlayerLocation.Y + CarSpawnerOffset, CurrentCarSpawnerLoc.Z);
-	UE_LOG(LogTemp,Warning, TEXT("New Spawner Loc %s"), *NewCarSpawnerLoc.ToString());
 	CarSpawnerActor->SetActorLocation(NewCarSpawnerLoc);
+	// UE_LOG(LogTemp,Warning, TEXT("New Spawner Loc %s"), *NewCarSpawnerLoc.ToString());
 }
 
 void AGameManager::CarSpawnerInitialization()
@@ -52,11 +53,16 @@ void AGameManager::CarSpawnerInitialization()
 
 void AGameManager::InitPlayer()
 {
-	APawn* Pawn  = GetWorld()->GetFirstPlayerController()->GetPawn();
+	APawn* Pawn= GetWorld()->GetFirstPlayerController()->GetPawn();
 	if (Pawn) {
 		PlayerActor = Cast<APlayerCharacter>(Pawn);
 	}
 	PlayerActor->SetPlayerMaxSpeed(CurrentGameDifficulty);
+}
+
+void AGameManager::SpawnCar()
+{
+	CarSpawnerActor->SpawnCar();
 }
 
 //void AGameManager::PlayerSpawnInitialization()
