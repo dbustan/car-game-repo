@@ -21,17 +21,18 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CarSpawning")
 	FHitResult Hit;
-
+	FTimerHandle DestroyTemplateTimer;
 	UPROPERTY(EditDefaultsOnly)
 	FVector StartPos;
 
 	UPROPERTY(EditDefaultsOnly)
 	FVector EndPos;
-	UPROPERTY(VisibleAnywhere)
-	float CurrentGameSpeed;
 	UPROPERTY(EditDefaultsOnly)
 	TArray<TSubclassOf<AActor>> AllRoundTemplates;
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CarSpawning")
+	TArray<USceneComponent*> SpawnPoints;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CarSpawning")
+	AActor* RoundTemplateActor;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -40,11 +41,11 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	void HandleCarSpawning(int Round);
+	void DestroyTemplate();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	void SetGameSpeed(float NewSpeed);
-	void RoundHandling(int Round);
-	void HandleSpawning(int Round);
+	void HandleTemplate(int Round);
 };

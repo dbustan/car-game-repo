@@ -19,39 +19,29 @@ void ACarSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	CurrentGameSpeed = 1;
+	
 
 	
 }
+
+
 
 // Called every frame
 void ACarSpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	// if (RoundTemplateActor)
+	// {
+	// 	FVector TemplateLocation = RoundTemplateActor->GetActorLocation();
+	// 	FVector NewLocation = FVector(TemplateLocation.X, GetActorLocation().Y, TemplateLocation.Z);
+	// 	RoundTemplateActor->SetActorLocation(NewLocation);
+	// }
 }
 
 void ACarSpawner::SetGameSpeed(float NewSpeed)
 {
-	CurrentGameSpeed = NewSpeed;
+	
 }
-
-void ACarSpawner::RoundHandling(int Round)
-{
-	switch (Round)
-	{
-		case 1:
-			{
-				HandleSpawning(Round);
-			}
-		break;
-		default:
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Sucks for you"));
-			}
-		
-		break;
-	}
 	// StartPos = this->GetActorLocation();
 	// EndPos = StartPos.DownVector * 1000;
 	// if (GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos, ECC_Visibility)) {
@@ -64,9 +54,9 @@ void ACarSpawner::RoundHandling(int Round)
 	// 	/*SpawnedActor->PlayAnimation();*/
 	// 	SpawnedActor->InitSpawnProperties(CurrentGameSpeed);
 	// }
-}
 
-void ACarSpawner::HandleSpawning(int Round)
+
+void ACarSpawner::HandleTemplate(int Round)
 {
 	TSubclassOf<AActor> CurrentRoundTemplate = AllRoundTemplates[Round-1];
 	StartPos = this->GetActorLocation();
@@ -76,21 +66,40 @@ void ACarSpawner::HandleSpawning(int Round)
 		SpawnParams.Instigator = NULL;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		FTransform TemplateTransform = FTransform(FRotator::ZeroRotator, Hit.Location);
-		if (AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(CurrentRoundTemplate, TemplateTransform, SpawnParams))
+		RoundTemplateActor = GetWorld()->SpawnActor<AActor>(CurrentRoundTemplate, TemplateTransform, SpawnParams);
+		if (RoundTemplateActor)
 		{
 			TArray<UArrowComponent*> Variations;
-			SpawnedActor->GetComponents<UArrowComponent>(Variations);
+			RoundTemplateActor->GetComponents<UArrowComponent>(Variations);
 			int Random = FMath::RandRange(0, Variations.Num() - 1);
-			TArray<USceneComponent*> SpawnPoints;
 			Variations[Random]->GetChildrenComponents(false, SpawnPoints);
 			for (USceneComponent* SpawnPoint : SpawnPoints)
 			{
 				SpawnPoint->SetVisibility(true, true);
+				HandleCarSpawning(Round);
 			}
-			
-			
 		}
+		
 	}
 	UE_LOG(LogTemp, Display, TEXT("Spawned Template"));
 }
 
+void ACarSpawner::HandleCarSpawning(int Round)
+{
+	for (USceneComponent* SpawnPoint : SpawnPoints)
+	{
+		if (Round < 3)
+		{
+			GetWorld()->SpawnActor<ACar>(AllCars[0], SpawnPoint->GetComponentLocation(), FRotator::ZeroRotator);
+		}
+	}
+	
+	GetWorldTimerManager().SetTimer(DestroyTemplateTimer,this, &ACarSpawner::DestroyTemplate, 3.0, true);
+	
+	
+}
+
+void ACarSpawner::DestroyTemplate()
+{
+	// RoundTemplateActor->Destroy();
+}

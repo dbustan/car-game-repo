@@ -35,7 +35,7 @@ void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	CharacterMovementComponent = GetCharacterMovement();
-	DefaultSpeed = 300.0f;
+	DefaultSpeed = 200.0f;
 	CharacterMovementComponent->MaxWalkSpeed = DefaultSpeed;
 	MaxSpeed = 2000.0f;
 	/*SpawnPhone();*/

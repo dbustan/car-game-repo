@@ -20,14 +20,12 @@ void AGameManager::BeginPlay()
 	CarSpawnerInitialization();
 	InitPlayer();
 	
-	// CarSpawnerOffset = -5000.0f;
-	/*PlayerSpawnInitialization();*/
-	/*float CurrentGameDifficulty = 1;*/
+	CarSpawnerOffset = -5000.0f;
 	FVector PlayerLocation = PlayerActor->GetActorLocation();
 	FVector CurrentCarSpawnerLoc = CarSpawnerActor->GetActorLocation();
-	// FVector NewCarSpawnerLoc = FVector(CurrentCarSpawnerLoc.X, PlayerLocation.Y + CarSpawnerOffset, CurrentCarSpawnerLoc.Z);
-	// CarSpawnerActor->SetActorLocation(NewCarSpawnerLoc);
-	SpawnCar(1);
+	FVector NewCarSpawnerLoc = FVector(CurrentCarSpawnerLoc.X, PlayerLocation.Y + CarSpawnerOffset, CurrentCarSpawnerLoc.Z);
+	CarSpawnerActor->SetActorLocation(NewCarSpawnerLoc);
+	CarSpawnerActor->HandleTemplate(1);
 	// FTimerDelegate TimerDelegate;
 	// TimerDelegate.BindUFunction(this, "SpawnCar", CurrentRound);
 	// GetWorldTimerManager().SetTimer(CarSpawnerTimer, TimerDelegate, FMath::FRandRange(1.0, 3.0), true);
@@ -39,9 +37,9 @@ void AGameManager::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	FVector PlayerLocation = PlayerActor->GetActorLocation();
 	FVector CurrentCarSpawnerLoc = CarSpawnerActor->GetActorLocation();
-	// FVector NewCarSpawnerLoc = FVector(CurrentCarSpawnerLoc.X, PlayerLocation.Y + CarSpawnerOffset, CurrentCarSpawnerLoc.Z);
-	// CarSpawnerActor->SetActorLocation(NewCarSpawnerLoc);
-	// UE_LOG(LogTemp,Warning, TEXT("New Spawner Loc %s"), *NewCarSpawnerLoc.ToString());
+	FVector NewCarSpawnerLoc = FVector(CurrentCarSpawnerLoc.X, PlayerLocation.Y + CarSpawnerOffset, CurrentCarSpawnerLoc.Z);
+	CarSpawnerActor->SetActorLocation(NewCarSpawnerLoc);
+	UE_LOG(LogTemp,Warning, TEXT("New Spawner Loc %s"), *NewCarSpawnerLoc.ToString());
 }
 
 void AGameManager::CarSpawnerInitialization()
@@ -65,7 +63,7 @@ void AGameManager::InitPlayer()
 
 void AGameManager::SpawnCar(int Round)
 {
-	CarSpawnerActor->RoundHandling(Round);
+	
 }
 
 //void AGameManager::PlayerSpawnInitialization()

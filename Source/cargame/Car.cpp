@@ -12,11 +12,8 @@ ACar::ACar()
 	PrimaryActorTick.bCanEverTick = true;
 	CarScene = CreateDefaultSubobject<USceneComponent>(TEXT("CarRoot"));
 	CarScene->SetupAttachment(RootComponent);
-	SpawnInVFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("VFX"));
-	SpawnInVFX->SetupAttachment(RootComponent);
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Car Skeletal Mesh"));
 	SkeletalMesh->SetupAttachment(CarScene);
-	
 }
 
 // Called when the game starts or when spawned
