@@ -24,14 +24,10 @@ protected:
 	float CurrentGameDifficulty;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CarSpawner")
 	float CarSpawnerOffset;
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player")
-	//class APlayerCharacter* PlayerCharacterActor;
-	///*UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player")
-	//TSubclassOf<APlayerCharacter> PlayerBP;
-
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Player")
-	//FVector PlayerLocation = FVector(730.0, -1080.0, 0);
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
+	int TotalRounds;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
+	int CurrentRound = 1;
 	class APlayerCharacter* PlayerActor;
 	
 public:	
@@ -47,6 +43,6 @@ public:
 private:
 	void CarSpawnerInitialization();
 	void InitPlayer();
-	void SpawnCar();
+	void SpawnCar(int Round);
 	/*void PlayerSpawnInitialization();*/
 };

@@ -3,6 +3,9 @@
 
 #include "CarSpawner.h"
 
+#include "Components/SphereComponent.h"
+#include "EntitySystem/MovieSceneEntitySystemRunner.h"
+
 // Sets default values
 ACarSpawner::ACarSpawner()
 {
@@ -33,21 +36,61 @@ void ACarSpawner::SetGameSpeed(float NewSpeed)
 	CurrentGameSpeed = NewSpeed;
 }
 
-void ACarSpawner::SpawnCar()
+void ACarSpawner::RoundHandling(int Round)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Reaching Spawn car"));
+	switch (Round)
+	{
+		case 1:
+			{
+				HandleSpawning(Round);
+			}
+		break;
+		default:
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Sucks for you"));
+			}
+		
+		break;
+	}
+	// StartPos = this->GetActorLocation();
+	// EndPos = StartPos.DownVector * 1000;
+	// if (GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos, ECC_Visibility)) {
+	// 	FActorSpawnParameters SpawnParams;
+	// 	SpawnParams.Instigator = NULL;
+	// 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	// 	FTransform CarTransform = FTransform(FRotator::ZeroRotator, Hit.Location);
+	// 	ACar* SpawnedActor = GetWorld()->SpawnActor<ACar>(AllCars[0], CarTransform, SpawnParams);
+	// 	//Have data gathered from UWorldsubsystem regarding this
+	// 	/*SpawnedActor->PlayAnimation();*/
+	// 	SpawnedActor->InitSpawnProperties(CurrentGameSpeed);
+	// }
+}
+
+void ACarSpawner::HandleSpawning(int Round)
+{
+	TSubclassOf<AActor> CurrentRoundTemplate = AllRoundTemplates[Round-1];
 	StartPos = this->GetActorLocation();
 	EndPos = StartPos.DownVector * 1000;
 	if (GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos, ECC_Visibility)) {
-		UE_LOG(LogTemp, Warning, TEXT("Reaching Spawn car"));
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Instigator = NULL;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		FTransform CarTransform = FTransform(FRotator::ZeroRotator, Hit.Location);
-		ACar* SpawnedActor = GetWorld()->SpawnActor<ACar>(AllCars[0], CarTransform, SpawnParams);
-		//Have data gathered from UWorldsubsystem regarding this
-		/*SpawnedActor->PlayAnimation();*/
-		SpawnedActor->InitSpawnProperties(CurrentGameSpeed);
+		FTransform TemplateTransform = FTransform(FRotator::ZeroRotator, Hit.Location);
+		if (AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(CurrentRoundTemplate, TemplateTransform, SpawnParams))
+		{
+			TArray<UArrowComponent*> Variations;
+			SpawnedActor->GetComponents<UArrowComponent>(Variations);
+			int Random = FMath::RandRange(0, Variations.Num() - 1);
+			TArray<USceneComponent*> SpawnPoints;
+			Variations[Random]->GetChildrenComponents(false, SpawnPoints);
+			for (USceneComponent* SpawnPoint : SpawnPoints)
+			{
+				SpawnPoint->SetVisibility(true, true);
+			}
+			
+			
+		}
 	}
+	UE_LOG(LogTemp, Display, TEXT("Spawned Template"));
 }
 

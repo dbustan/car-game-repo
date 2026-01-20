@@ -17,6 +17,7 @@ void AWhiteCar::BeginPlay()
     Super::BeginPlay();
 	PlayerDetection->OnComponentBeginOverlap.AddDynamic(this, &AWhiteCar::OverlapBegin);
 	Speed = 300.0f;
+	
 }
 
 void AWhiteCar::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,

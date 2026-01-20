@@ -3,6 +3,8 @@
 
 #include "Car.h"
 
+#include "EntitySystem/MovieSceneEntitySystemRunner.h"
+
 // Sets default values
 ACar::ACar()
 {
@@ -10,6 +12,8 @@ ACar::ACar()
 	PrimaryActorTick.bCanEverTick = true;
 	CarScene = CreateDefaultSubobject<USceneComponent>(TEXT("CarRoot"));
 	CarScene->SetupAttachment(RootComponent);
+	SpawnInVFX = CreateDefaultSubobject<UNiagaraComponent>(TEXT("VFX"));
+	SpawnInVFX->SetupAttachment(RootComponent);
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Car Skeletal Mesh"));
 	SkeletalMesh->SetupAttachment(CarScene);
 	
@@ -19,7 +23,10 @@ ACar::ACar()
 void ACar::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
+	// SpawnInVFX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SpawnInVFXTemplate, this->GetActorLocation(), FRotator::ZeroRotator);
+	
+	// UE_LOG(LogTemp, Warning, TEXT("%s"), *SpawnInVFXTemplate->GetName());
 }
 
 // Called every frame

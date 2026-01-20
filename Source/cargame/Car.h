@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Car.generated.h"
 
 UCLASS()
@@ -21,6 +23,10 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Car")
 	UAnimSequence* IdleAnimation;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
+	class UNiagaraSystem* SpawnInVFXTemplate;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "VFX")
+	class UNiagaraComponent* SpawnInVFX;
 public:	
 	// Sets default values for this actor's properties
 	ACar();
@@ -33,5 +39,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void InitSpawnProperties(float ActionSpeed);
-	void PlayAnimation();
+	
 };

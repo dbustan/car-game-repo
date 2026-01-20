@@ -19,15 +19,18 @@ void AGameManager::BeginPlay()
 	Super::BeginPlay();
 	CarSpawnerInitialization();
 	InitPlayer();
-	CarSpawnerOffset = -5000.0f;
+	
+	// CarSpawnerOffset = -5000.0f;
 	/*PlayerSpawnInitialization();*/
 	/*float CurrentGameDifficulty = 1;*/
 	FVector PlayerLocation = PlayerActor->GetActorLocation();
 	FVector CurrentCarSpawnerLoc = CarSpawnerActor->GetActorLocation();
-	FVector NewCarSpawnerLoc = FVector(CurrentCarSpawnerLoc.X, PlayerLocation.Y + CarSpawnerOffset, CurrentCarSpawnerLoc.Z);
-	CarSpawnerActor->SetActorLocation(NewCarSpawnerLoc);
-	SpawnCar();
-	GetWorldTimerManager().SetTimer(CarSpawnerTimer, this, &AGameManager::SpawnCar, FMath::FRandRange(1.0, 3.0), true);
+	// FVector NewCarSpawnerLoc = FVector(CurrentCarSpawnerLoc.X, PlayerLocation.Y + CarSpawnerOffset, CurrentCarSpawnerLoc.Z);
+	// CarSpawnerActor->SetActorLocation(NewCarSpawnerLoc);
+	SpawnCar(1);
+	// FTimerDelegate TimerDelegate;
+	// TimerDelegate.BindUFunction(this, "SpawnCar", CurrentRound);
+	// GetWorldTimerManager().SetTimer(CarSpawnerTimer, TimerDelegate, FMath::FRandRange(1.0, 3.0), true);
 }
 
 // Called every frame
@@ -36,8 +39,8 @@ void AGameManager::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	FVector PlayerLocation = PlayerActor->GetActorLocation();
 	FVector CurrentCarSpawnerLoc = CarSpawnerActor->GetActorLocation();
-	FVector NewCarSpawnerLoc = FVector(CurrentCarSpawnerLoc.X, PlayerLocation.Y + CarSpawnerOffset, CurrentCarSpawnerLoc.Z);
-	CarSpawnerActor->SetActorLocation(NewCarSpawnerLoc);
+	// FVector NewCarSpawnerLoc = FVector(CurrentCarSpawnerLoc.X, PlayerLocation.Y + CarSpawnerOffset, CurrentCarSpawnerLoc.Z);
+	// CarSpawnerActor->SetActorLocation(NewCarSpawnerLoc);
 	// UE_LOG(LogTemp,Warning, TEXT("New Spawner Loc %s"), *NewCarSpawnerLoc.ToString());
 }
 
@@ -60,9 +63,9 @@ void AGameManager::InitPlayer()
 	PlayerActor->SetPlayerMaxSpeed(CurrentGameDifficulty);
 }
 
-void AGameManager::SpawnCar()
+void AGameManager::SpawnCar(int Round)
 {
-	CarSpawnerActor->SpawnCar();
+	CarSpawnerActor->RoundHandling(Round);
 }
 
 //void AGameManager::PlayerSpawnInitialization()

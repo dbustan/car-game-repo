@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Car.h"
 #include "WhiteCar.h"
+#include "Components/ArrowComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "CarSpawner.generated.h"
 
@@ -28,7 +29,9 @@ protected:
 	FVector EndPos;
 	UPROPERTY(VisibleAnywhere)
 	float CurrentGameSpeed;
-
+	UPROPERTY(EditDefaultsOnly)
+	TArray<TSubclassOf<AActor>> AllRoundTemplates;
+	
 	
 public:	
 	// Sets default values for this actor's properties
@@ -42,5 +45,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	void SetGameSpeed(float NewSpeed);
-	void SpawnCar();
+	void RoundHandling(int Round);
+	void HandleSpawning(int Round);
 };
