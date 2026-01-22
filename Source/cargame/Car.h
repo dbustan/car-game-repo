@@ -24,6 +24,8 @@ protected:
 	UAnimSequence* IdleAnimation;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Car")
 	float Speed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Car")
+	FVector Location;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RoundEnd")
 	class UBoxComponent* RoundEndCheck;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RoundStart")

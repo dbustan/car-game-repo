@@ -49,7 +49,8 @@ void ACar::MoveForward(float DeltaTime)
 {
 	if (CanMove)
 	{
-		FVector Location = GetActorLocation();
+		// UE_LOG(LogTemp, Error, TEXT("%d"), CanMove);
+		Location = GetActorLocation();
 		Location += GetActorForwardVector() * Speed * DeltaTime;
 		SetActorLocation(Location);
 	}

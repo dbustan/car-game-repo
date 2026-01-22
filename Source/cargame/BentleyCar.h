@@ -24,6 +24,6 @@ protected:
 public:
 	// Called every frame
 	ABentleyCar();
-	virtual void Tick(float DeltaTime) override;\
+	virtual void Tick(float DeltaTime) override;
 
 };

@@ -6,8 +6,9 @@
 void ABentleyCar::BeginPlay()
 {
 	Super::BeginPlay();
-	Speed = 500;
-	GetWorldTimerManager().SetTimer(RotationTimer, this, &ABentleyCar::RotateCar, 1.7, false);
+	Speed = 500.0f;
+	GetWorldTimerManager().SetTimer(RotationTimer, this, &ABentleyCar::RotateCar, 5, false);
+	
 	// RotateCar();
 	
 }
@@ -23,7 +24,7 @@ void ABentleyCar::RotateCar()
 		this->AddActorLocalRotation(NewRotation);
 		if (RotationCount == 8)
 		{
-			GetWorldTimerManager().SetTimer(RotationTimer, this, &ABentleyCar::RotateCar, 0.9, false);
+			GetWorldTimerManager().SetTimer(RotationTimer, this, &ABentleyCar::RotateCar, 0.4, false);
 		} else
 		{
 			GetWorldTimerManager().SetTimer(RotationTimer, this, &ABentleyCar::RotateCar, 0.1, false);
@@ -34,7 +35,7 @@ void ABentleyCar::RotateCar()
 		this->AddActorLocalRotation(NewRotation);
 		if  (RotationCount == 16)
 		{
-			GetWorldTimerManager().SetTimer(RotationTimer, this, &ABentleyCar::RotateCar, 1.5, false);
+			GetWorldTimerManager().SetTimer(RotationTimer, this, &ABentleyCar::RotateCar, 2.2, false);
 		} else
 		{
 			GetWorldTimerManager().SetTimer(RotationTimer, this, &ABentleyCar::RotateCar, 0.1, false);
@@ -54,7 +55,5 @@ ABentleyCar::ABentleyCar()
 void ABentleyCar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	// FVector Location = GetActorLocation();
-	// Location += this->GetActorForwardVector() * Speed * DeltaTime;
-	// this->SetActorLocation(Location);
+	
 }
