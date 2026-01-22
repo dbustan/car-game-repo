@@ -16,8 +16,6 @@ class CARGAME_API AWhiteCar : public ACar
 	GENERATED_BODY()
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Car")
-	float Speed;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Car")
 	class UBoxComponent* PlayerDetection;
 	FTimerHandle RotationTimer;
 	bool IsGoingIn;

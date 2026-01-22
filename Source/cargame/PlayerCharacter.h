@@ -63,7 +63,8 @@ protected:
 	float Acceleration = 0;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
-	bool isMoving;
+	bool HasInput;
+	bool CanMove;
 	UPROPERTY(EditDefaultsOnly)
 	//idk why its like this but this was the only way to spawn the phone
 	TSubclassOf<class APhone> PhoneToSpawn;
@@ -89,9 +90,14 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void SetPlayerMaxSpeed(float CurrentGameSpeed);
-	
+
+	void SetCanMove(bool NewCanMove);
+
+	void EnablePlayerMovement();
 protected:
 	void HandleInteractions();
 
 	void HandleDefaultMovement();
+
+	
 };

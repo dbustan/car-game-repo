@@ -78,6 +78,16 @@ void APlayerCharacter::SetPlayerMaxSpeed(float CurrentGameSpeed)
 	MaxSpeed = MaxSpeed * CurrentGameSpeed;
 }
 
+void APlayerCharacter::SetCanMove(bool NewCanMove)
+{
+	CanMove = NewCanMove;
+}
+
+void APlayerCharacter::EnablePlayerMovement()
+{
+	CanMove = true;
+}
+
 void APlayerCharacter::HandleInteractions()
 {
 	FVector MouseStartingPos;
@@ -101,30 +111,42 @@ void APlayerCharacter::HandleInteractions()
 
 void APlayerCharacter::HandleDefaultMovement()
 {
-	if (!isMoving)
+	if (CanMove)
 	{
-		Acceleration -= GetWorld()->GetDeltaSeconds();
-		Acceleration = FMath::Clamp(Acceleration, 0, 1);
-		CharacterMovementComponent->MaxWalkSpeed = FMath::Lerp(DefaultSpeed, MaxSpeed, Acceleration);
-		AddMovementInput(GetActorForwardVector(), true);
-		// UE_LOG(LogTemp, Warning, TEXT("Slowing down - Current Speed %f"), CharacterMovementComponent->MaxWalkSpeed);
+		if (!HasInput)
+		{
+			Acceleration -= GetWorld()->GetDeltaSeconds();
+			Acceleration = FMath::Clamp(Acceleration, 0, 1);
+			CharacterMovementComponent->MaxWalkSpeed = FMath::Lerp(DefaultSpeed, MaxSpeed, Acceleration);
+			AddMovementInput(GetActorForwardVector(), true);
+			// UE_LOG(LogTemp, Warning, TEXT("Slowing down - Current Speed %f"), CharacterMovementComponent->MaxWalkSpeed);
+		}
 	}
+	
 }
 
 void APlayerCharacter::SpeedUp(const FInputActionValue& InputValue) {
-	isMoving = true;
-	Acceleration += GetWorld()->GetDeltaSeconds();
-	Acceleration = FMath::Clamp(Acceleration, 0, 1);
-	CharacterMovementComponent->MaxWalkSpeed = FMath::Lerp(DefaultSpeed, MaxSpeed, Acceleration);
-	AddMovementInput(GetActorForwardVector(), InputValue.Get<bool>());
+	if (CanMove)
+	{
+		HasInput = true;
+		Acceleration += GetWorld()->GetDeltaSeconds();
+		Acceleration = FMath::Clamp(Acceleration, 0, 1);
+		CharacterMovementComponent->MaxWalkSpeed = FMath::Lerp(DefaultSpeed, MaxSpeed, Acceleration);
+		AddMovementInput(GetActorForwardVector(), InputValue.Get<bool>());
+	}
+	
 	// UE_LOG(LogTemp, Warning, TEXT("Speeding up - Current Walk speed %f"), CharacterMovementComponent->MaxWalkSpeed);
 }
 
 void APlayerCharacter::ReturnToNormalSpeed(const FInputActionValue& InputValue)
 {
-	
-	isMoving = false;
+	if (CanMove)
+	{
+		HasInput = false;
+	}
 }
+
+
 
 
 

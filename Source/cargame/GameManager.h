@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "CarSpawner.h"
+#include  "Car.h"
 #include "PlayerCharacter.h"
 #include "GameManager.generated.h"
 
@@ -19,7 +20,8 @@ protected:
 	class ACarSpawner* CarSpawnerActor;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CarSpawner")
 	FVector CarSpawnerLocation = FVector(-240.0, 130.0, 170.0);
-	FTimerHandle CarSpawnerTimer;
+	FTimerHandle CarMovementTimer;
+	FTimerHandle PlayerMovementTimer;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game")
 	float CurrentGameDifficulty;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CarSpawner")
@@ -27,7 +29,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
 	int TotalRounds;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
+	float TimeBetweenRounds;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
 	int CurrentRound = 1;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CarSpawner")
+	ACar* LastPlacedCar;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Game")
+	class UBoxComponent* RoundEndCollider;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game")
 	class APlayerCharacter* PlayerActor;
 	
 public:	
@@ -44,5 +53,10 @@ private:
 	void CarSpawnerInitialization();
 	void InitPlayer();
 	void SpawnCar(int Round);
+	UFUNCTION()
+	void EndRound(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	void StartRound();
+	void StartMovement();
 	/*void PlayerSpawnInitialization();*/
 };

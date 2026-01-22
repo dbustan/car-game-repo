@@ -3,7 +3,7 @@
 
 #include "WhiteCar.h"
 
-AWhiteCar::AWhiteCar() : Super()
+AWhiteCar::AWhiteCar() 
 {
 	
 	PlayerDetection = CreateDefaultSubobject<UBoxComponent>(TEXT("PlayerDetectionBox"));
@@ -26,7 +26,7 @@ void AWhiteCar::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
 	IsGoingIn = ShouldHappen(100);
 	if (IsGoingIn)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Going in"));
+		// UE_LOG(LogTemp, Warning, TEXT("Going in"));
 		RotateCar();
 		GetWorldTimerManager().SetTimer(RotationTimer, this, &AWhiteCar::RotateCar, 0.5, false);
 	}
@@ -51,10 +51,10 @@ void AWhiteCar::RotateCar()
 void AWhiteCar::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
-	FVector Location = GetActorLocation();
-	Location += GetActorForwardVector() * Speed * DeltaTime;
-    SetActorLocation(Location);
-	UE_LOG(LogTemp, Warning, TEXT("Location: %s"), *Location.ToString());
+	// FVector Location = GetActorLocation();
+	// Location += GetActorForwardVector() * Speed * DeltaTime;
+ //    SetActorLocation(Location);
+	// UE_LOG(LogTemp, Warning, TEXT("Location: %s"), *Location.ToString());
 }
 
 

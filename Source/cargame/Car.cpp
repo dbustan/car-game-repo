@@ -3,6 +3,7 @@
 
 #include "Car.h"
 
+#include "Components/BoxComponent.h"
 #include "EntitySystem/MovieSceneEntitySystemRunner.h"
 
 // Sets default values
@@ -12,6 +13,11 @@ ACar::ACar()
 	PrimaryActorTick.bCanEverTick = true;
 	CarScene = CreateDefaultSubobject<USceneComponent>(TEXT("CarRoot"));
 	CarScene->SetupAttachment(RootComponent);
+	RoundEndCheck = CreateDefaultSubobject<UBoxComponent>(TEXT("RoundEndCheck"));
+	RoundEndCheck->SetupAttachment(CarScene);
+	RoundEndCheck->SetCollisionResponseToAllChannels(ECR_Ignore);
+	RoundEndCheck->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
+	RoundEndCheck->Deactivate();
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Car Skeletal Mesh"));
 	SkeletalMesh->SetupAttachment(CarScene);
 }
@@ -20,22 +26,38 @@ ACar::ACar()
 void ACar::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	// SpawnInVFX = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SpawnInVFXTemplate, this->GetActorLocation(), FRotator::ZeroRotator);
-	
-	// UE_LOG(LogTemp, Warning, TEXT("%s"), *SpawnInVFXTemplate->GetName());
+	CanMove = true;
 }
+
+
 
 // Called every frame
 void ACar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	MoveForward(DeltaTime);
 }
 
 void ACar::InitSpawnProperties(float ActionSpeed)
 {
 	UE_LOG(LogTemp, Warning, TEXT("WHAT"));
+}
+
+
+
+void ACar::MoveForward(float DeltaTime)
+{
+	if (CanMove)
+	{
+		FVector Location = GetActorLocation();
+		Location += GetActorForwardVector() * Speed * DeltaTime;
+		SetActorLocation(Location);
+	}
+}
+
+void ACar::SetMoving(bool NewMovement)
+{
+	CanMove = NewMovement;
 }
 
 

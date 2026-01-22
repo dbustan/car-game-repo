@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Car.h"
 #include "WhiteCar.h"
+#include "DrawDebugHelpers.h"
 #include "Components/ArrowComponent.h"
 #include "Math/UnrealMathUtility.h"
 #include "CarSpawner.generated.h"
@@ -33,19 +34,25 @@ protected:
 	TArray<USceneComponent*> SpawnPoints;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CarSpawning")
 	AActor* RoundTemplateActor;
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Round")
+	ACar* LastCar;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Round")
+	TArray<ACar*> CurrentlySpawnedCars;
 public:	
-	// Sets default values for this actor's properties
 	ACarSpawner();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	void HandleCarSpawning(int Round);
-	void DestroyTemplate();
-public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	void SetGameSpeed(float NewSpeed);
 	void HandleTemplate(int Round);
+	ACar* GetLastCar();
+	void DestroyAllInfo();
+	void StartCarMovement();
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	void HandleCarSpawning(USceneComponent* SpawnPoint, int Round);
+	void DestroyTemplate();
+	
+
+	// Called every frame
+	
 };

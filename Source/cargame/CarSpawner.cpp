@@ -4,6 +4,7 @@
 #include "CarSpawner.h"
 
 #include "Components/SphereComponent.h"
+
 #include "EntitySystem/MovieSceneEntitySystemRunner.h"
 
 // Sets default values
@@ -19,9 +20,6 @@ void ACarSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	
-
-	
 }
 
 
@@ -30,42 +28,23 @@ void ACarSpawner::BeginPlay()
 void ACarSpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	// if (RoundTemplateActor)
-	// {
-	// 	FVector TemplateLocation = RoundTemplateActor->GetActorLocation();
-	// 	FVector NewLocation = FVector(TemplateLocation.X, GetActorLocation().Y, TemplateLocation.Z);
-	// 	RoundTemplateActor->SetActorLocation(NewLocation);
-	// }
 }
 
-void ACarSpawner::SetGameSpeed(float NewSpeed)
-{
-	
-}
-	// StartPos = this->GetActorLocation();
-	// EndPos = StartPos.DownVector * 1000;
-	// if (GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos, ECC_Visibility)) {
-	// 	FActorSpawnParameters SpawnParams;
-	// 	SpawnParams.Instigator = NULL;
-	// 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	// 	FTransform CarTransform = FTransform(FRotator::ZeroRotator, Hit.Location);
-	// 	ACar* SpawnedActor = GetWorld()->SpawnActor<ACar>(AllCars[0], CarTransform, SpawnParams);
-	// 	//Have data gathered from UWorldsubsystem regarding this
-	// 	/*SpawnedActor->PlayAnimation();*/
-	// 	SpawnedActor->InitSpawnProperties(CurrentGameSpeed);
-	// }
+
 
 
 void ACarSpawner::HandleTemplate(int Round)
 {
 	TSubclassOf<AActor> CurrentRoundTemplate = AllRoundTemplates[Round-1];
 	StartPos = this->GetActorLocation();
-	EndPos = StartPos.DownVector * 1000;
+	EndPos = StartPos + StartPos.DownVector * 1000;
 	if (GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos, ECC_Visibility)) {
+		DrawDebugLine(GetWorld(), StartPos, EndPos, FColor::Emerald, true, -1,  0, 10);
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Instigator = NULL;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 		FTransform TemplateTransform = FTransform(FRotator::ZeroRotator, Hit.Location);
+		UE_LOG(LogTemp, Error, TEXT("%s"), *Hit.Location.ToString());
 		RoundTemplateActor = GetWorld()->SpawnActor<AActor>(CurrentRoundTemplate, TemplateTransform, SpawnParams);
 		if (RoundTemplateActor)
 		{
@@ -76,30 +55,97 @@ void ACarSpawner::HandleTemplate(int Round)
 			for (USceneComponent* SpawnPoint : SpawnPoints)
 			{
 				SpawnPoint->SetVisibility(true, true);
-				HandleCarSpawning(Round);
+				HandleCarSpawning(SpawnPoint,Round);
 			}
+			
 		}
 		
 	}
-	UE_LOG(LogTemp, Display, TEXT("Spawned Template"));
+	GetWorldTimerManager().SetTimer(DestroyTemplateTimer,this, &ACarSpawner::DestroyTemplate, 3.0, true);
 }
 
-void ACarSpawner::HandleCarSpawning(int Round)
+void ACarSpawner::HandleCarSpawning(USceneComponent* SpawnPoint, int Round)
 {
-	for (USceneComponent* SpawnPoint : SpawnPoints)
+	// UE_LOG(LogTemp, Display, TEXT("Running"));
+	ACar* CarActor;
+	if (Round < 3)
 	{
-		if (Round < 3)
-		{
-			GetWorld()->SpawnActor<ACar>(AllCars[0], SpawnPoint->GetComponentLocation(), FRotator::ZeroRotator);
-		}
+		CarActor = GetWorld()->SpawnActor<ACar>(AllCars[0], SpawnPoint->GetComponentLocation(), FRotator::ZeroRotator);
+		CurrentlySpawnedCars.Add(CarActor);
+		CarActor->SetMoving(false);
+	} else if (Round == 3)
+	{
+		
+		CarActor = GetWorld()->SpawnActor<ACar>(AllCars[0], SpawnPoint->GetComponentLocation(), FRotator::ZeroRotator);
+		CurrentlySpawnedCars.Add(CarActor);
+		CarActor->SetMoving(false);
+	} else if (Round <= 6)
+	{
+		
+	} else if (Round < 10)
+	{
+		
+	} else if (Round == 10)
+	{
+		
 	}
-	
-	GetWorldTimerManager().SetTimer(DestroyTemplateTimer,this, &ACarSpawner::DestroyTemplate, 3.0, true);
+	if (SpawnPoint->ComponentHasTag("Last"))
+	{
+		LastCar = CarActor;
+		UE_LOG(LogTemp, Error, TEXT("Last Car: %s"), *LastCar->GetName());
+	}
 	
 	
 }
+
+ACar* ACarSpawner::GetLastCar()
+{
+	
+	if (LastCar)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Last Car %s"), *LastCar->GetName());
+		return LastCar;
+	} else
+	{
+		return nullptr;
+	}
+	
+}
+
+void ACarSpawner::DestroyAllInfo()
+{
+	for (ACar* Car : CurrentlySpawnedCars)
+	{
+		if (Car)
+		{
+			Car->Destroy();
+		}
+	}
+	LastCar = nullptr;
+	CurrentlySpawnedCars.Empty();
+	// for (USceneComponent* SpawnPoint : SpawnPoints)
+	// {
+	// 	UE::MovieScene::ERunnerFlushState::Spawn
+	// }
+}
+
 
 void ACarSpawner::DestroyTemplate()
 {
-	// RoundTemplateActor->Destroy();
+	if (RoundTemplateActor)
+	{
+		RoundTemplateActor->Destroy();
+	}
+	
+}
+
+void ACarSpawner::StartCarMovement()
+{
+	for (ACar* Car : CurrentlySpawnedCars)
+	{
+		if (Car)
+		{
+			Car->SetMoving(true);
+		}
+	}
 }

@@ -22,19 +22,23 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Car")
 	UAnimSequence* IdleAnimation;
-	
-	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Car")
+	float Speed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RoundEnd")
+	class UBoxComponent* RoundEndCheck;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RoundStart")
+	bool CanMove;
 public:	
 	// Sets default values for this actor's properties
 	ACar();
-
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void InitSpawnProperties(float ActionSpeed);
-	
+	void MoveForward(float DeltaTime);
+	void SetMoving(bool NewMovement);
 };
