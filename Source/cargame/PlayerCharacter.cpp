@@ -34,10 +34,16 @@ AActor* APlayerCharacter::SpawnPhone() {
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
 	CharacterMovementComponent = GetCharacterMovement();
 	DefaultSpeed = 200.0f;
 	CharacterMovementComponent->MaxWalkSpeed = DefaultSpeed;
 	MaxSpeed = 2000.0f;
+	if (PlayerHUDBP)
+	{
+		PlayerHUD = CreateWidget<UPlayerCharacterHUD>(GetWorld()->GetFirstPlayerController(),PlayerHUDBP);
+		PlayerHUD->AddToPlayerScreen();
+	}
 	/*SpawnPhone();*/
 }
 
@@ -71,6 +77,7 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &APlayerCharacter::SpeedUp);
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &APlayerCharacter::ReturnToNormalSpeed);
+		
 	}
 }
 void APlayerCharacter::SetPlayerMaxSpeed(float CurrentGameSpeed)
@@ -128,6 +135,7 @@ void APlayerCharacter::HandleDefaultMovement()
 void APlayerCharacter::SpeedUp(const FInputActionValue& InputValue) {
 	if (CanMove)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Input is being taken into account"));
 		HasInput = true;
 		Acceleration += GetWorld()->GetDeltaSeconds();
 		Acceleration = FMath::Clamp(Acceleration, 0, 1);

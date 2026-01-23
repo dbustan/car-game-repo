@@ -11,6 +11,8 @@
 #include "InputActionValue.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Phone.h"
+#include "PlayerCharacterHUD.h"
+#include "Blueprint/UserWidget.h"
 #include "Interactables.h"
 #include "Engine/World.h"
 #include "PlayerCharacter.generated.h"
@@ -68,6 +70,16 @@ protected:
 	UPROPERTY(EditDefaultsOnly)
 	//idk why its like this but this was the only way to spawn the phone
 	TSubclassOf<class APhone> PhoneToSpawn;
+
+	/*
+	 * HUD
+	 */
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class UPlayerCharacterHUD> PlayerHUDBP;
+
+	UPROPERTY()
+	class UPlayerCharacterHUD* PlayerHUD;
 public:
 	
 	APlayerCharacter();
