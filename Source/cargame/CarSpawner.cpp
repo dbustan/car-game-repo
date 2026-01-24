@@ -187,3 +187,8 @@ void ACarSpawner::StartCarMovement()
 		}
 	}
 }
+
+TArray<ACar*> ACarSpawner::GetAllCarsSpawned()
+{
+	return CurrentlySpawnedCars;
+}

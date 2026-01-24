@@ -3,7 +3,8 @@
 
 #include "Car.h"
 
-#include "Components/BoxComponent.h"
+#include "PlayerCharacter.h"
+
 #include "EntitySystem/MovieSceneEntitySystemRunner.h"
 
 // Sets default values
@@ -13,11 +14,11 @@ ACar::ACar()
 	PrimaryActorTick.bCanEverTick = true;
 	CarScene = CreateDefaultSubobject<USceneComponent>(TEXT("CarRoot"));
 	CarScene->SetupAttachment(RootComponent);
-	RoundEndCheck = CreateDefaultSubobject<UBoxComponent>(TEXT("RoundEndCheck"));
-	RoundEndCheck->SetupAttachment(CarScene);
-	RoundEndCheck->SetCollisionResponseToAllChannels(ECR_Ignore);
-	RoundEndCheck->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
-	RoundEndCheck->Deactivate();
+	CarCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("CarCollider"));
+	CarCollision->SetupAttachment(CarScene);
+	CarCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
+	CarCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
+	CarCollision->OnComponentBeginOverlap.AddDynamic(this, &ACar::KillPlayer);
 	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Car Skeletal Mesh"));
 	SkeletalMesh->SetupAttachment(CarScene);
 }
@@ -29,6 +30,11 @@ void ACar::BeginPlay()
 	CanMove = true;
 }
 
+void ACar::KillPlayer(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	OnTargetHit.Broadcast();
+}
 
 
 // Called every frame

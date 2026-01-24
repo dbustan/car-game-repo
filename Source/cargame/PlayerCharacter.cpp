@@ -44,6 +44,7 @@ void APlayerCharacter::BeginPlay()
 		PlayerHUD = CreateWidget<UPlayerCharacterHUD>(GetWorld()->GetFirstPlayerController(),PlayerHUDBP);
 		PlayerHUD->AddToPlayerScreen();
 		PlayerHUD->InitialCastToMoveRoundEmoji();
+		PlayerHUD->SetRoundNumEmojiText(1);
 		UpdateRoundStartTimerUI(3);
 		StartRoundUITween();
 	}
@@ -96,6 +97,7 @@ void APlayerCharacter::SetCanMove(bool NewCanMove)
 void APlayerCharacter::EnablePlayerMovement()
 {
 	CanMove = true;
+	HasInput = false;
 }
 
 void APlayerCharacter::SetCurrentRoundUI(FText Round)
@@ -105,7 +107,7 @@ void APlayerCharacter::SetCurrentRoundUI(FText Round)
 
 void APlayerCharacter::UpdateTimerUI(FText NewTime)
 {
-	PlayerHUD->SetRoundTime(NewTime);
+	PlayerHUD->SetRoundTimeLeft(NewTime);
 }
 
 void APlayerCharacter::UpdateRoundStartTimerUI(float NewTime)
@@ -125,6 +127,21 @@ void APlayerCharacter::StartRoundUITween()
 		PlayerHUD->RunRoundBaseAnimation();
 	}
 	
+}
+
+void APlayerCharacter::ChangeRoundIcon(int Round)
+{
+	PlayerHUD->SetRoundNumEmojiText(Round);
+}
+
+
+
+void APlayerCharacter::SetupGameOverScreen()
+{
+	PlayerHUD->ActivateGameOverScreen();
+	UpdateTimerUI(FText::FromString("Game Over"));
+	PlayerController->bShowMouseCursor = true;
+	PlayerController->bEnableClickEvents = true;
 }
 
 
@@ -159,7 +176,7 @@ void APlayerCharacter::HandleDefaultMovement()
 			Acceleration = FMath::Clamp(Acceleration, 0, 1);
 			CharacterMovementComponent->MaxWalkSpeed = FMath::Lerp(DefaultSpeed, MaxSpeed, Acceleration);
 			AddMovementInput(GetActorForwardVector(), true);
-			// UE_LOG(LogTemp, Warning, TEXT("Slowing down - Current Speed %f"), CharacterMovementComponent->MaxWalkSpeed);
+			UE_LOG(LogTemp, Warning, TEXT("%f: Max walk speed"), CharacterMovementComponent->MaxWalkSpeed);
 		}
 	}
 	
@@ -168,7 +185,6 @@ void APlayerCharacter::HandleDefaultMovement()
 void APlayerCharacter::SpeedUp(const FInputActionValue& InputValue) {
 	if (CanMove)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Input is being taken into account"));
 		HasInput = true;
 		Acceleration += GetWorld()->GetDeltaSeconds();
 		Acceleration = FMath::Clamp(Acceleration, 0, 1);

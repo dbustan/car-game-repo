@@ -47,7 +47,6 @@ void AGameManager::Tick(float DeltaTime)
 	CarSpawnerActor->SetActorLocation(NewCarSpawnerLoc);
 	if (LastPlacedCar)
 	{
-		
 		FVector LastPlacedCarLocation = LastPlacedCar->GetActorLocation();
 		FVector RoundEndLocation = FVector(NewCarSpawnerLoc.X, LastPlacedCarLocation.Y - 150, LastPlacedCarLocation.Z);
 		RoundEndCollider->SetWorldLocation(RoundEndLocation);
@@ -114,6 +113,12 @@ void AGameManager::StartRound()
 	{
 		PlayerActor->UpdateRoundStartTimerUI(SetupTimer);
 		PlayerActor->StartRoundUITween();
+		PlayerActor->ChangeRoundIcon(CurrentRound);
+	}
+	TArray<ACar*> AllCars = CarSpawnerActor->GetAllCarsSpawned();
+	for (ACar* Car : AllCars)
+	{
+		Car->OnTargetHit.AddDynamic(this, &AGameManager::LostGame);
 	}
 	StartMovement();
 }
@@ -128,6 +133,14 @@ void AGameManager::StartMovement()
 	GetWorldTimerManager().SetTimer(CarMovementTimer, CarSpawnerActor, &ACarSpawner::StartCarMovement, SetupTimer, false);
 	GetWorldTimerManager().SetTimer(PlayerMovementTimer, PlayerActor, &APlayerCharacter::EnablePlayerMovement, SetupTimer, false);
 	GetWorldTimerManager().SetTimer(RoundStartTimer, this, &AGameManager::StartRoundTimer, SetupTimer, false);
+}
+
+void AGameManager::LostGame()
+{
+	PlayerActor->SetCanMove(false);
+	TimerStarted = false;
+	PlayerActor->UpdateTimerUI(FText::FromString("Game Over"));
+	PlayerActor->SetupGameOverScreen();
 }
 
 

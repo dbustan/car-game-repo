@@ -57,12 +57,13 @@ public:
 private:
 	void CarSpawnerInitialization();
 	void InitPlayer();
-	void SpawnCar(int Round);
 	UFUNCTION()
 	void EndRound(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	void StartRound();
 	void StartRoundTimer();
 	void StartMovement();
+	UFUNCTION()
+	void LostGame();
 	/*void PlayerSpawnInitialization();*/
 };

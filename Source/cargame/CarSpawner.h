@@ -57,6 +57,7 @@ public:
 	ACar* GetLastCar();
 	void DestroyAllInfo();
 	void StartCarMovement();
+	TArray<ACar*> GetAllCarsSpawned();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -1,9 +1,11 @@
 #include "PlayerCharacterHUD.h"
 
+#include "Components/Button.h"
+#include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Materials/MaterialExpressionOperator.h"
 
-void UPlayerCharacterHUD::SetRoundTime(FText RoundTime)
+void UPlayerCharacterHUD::SetRoundTimeLeft(FText RoundTime)
 {
 	RoundTimerText->SetText(RoundTime);
 }
@@ -13,14 +15,10 @@ void UPlayerCharacterHUD::SetRound(FText RoundNum)
 	RoundTimerText->SetText(RoundNum);
 }
 
-void UPlayerCharacterHUD::SetRoundNumBaseText(FText RoundNumBase)
+void UPlayerCharacterHUD::SetRoundNumEmojiText(int RoundNum)
 {
-	
-}
-
-void UPlayerCharacterHUD::SetRoundEmojiText(UImage* RoundEmoji)
-{
-	
+	RoundEmojiInText->SetBrushFromTexture(RoundEmojis[RoundNum]);
+	RoundNumBaseText->SetText(FText::Format(INVTEXT("Round {0}"), RoundNum));
 }
 
 void UPlayerCharacterHUD::RunRoundBaseAnimation()
@@ -39,7 +37,13 @@ void UPlayerCharacterHUD::InitialCastToMoveRoundEmoji()
 {
 	RoundEmojiCanvasSlot = Cast<UCanvasPanelSlot>(RoundEmojiOverlay->Slot);
 	RoundStartPosition = RoundEmojiCanvasSlot->GetPosition();
-	RoundStartEndPosition = FVector2D(RoundStartPosition.X * -2, RoundStartPosition.Y);
+	RoundStartEndPosition = FVector2D(RoundStartPosition.X * -1.5, RoundStartPosition.Y);
+}
+
+void UPlayerCharacterHUD::ActivateGameOverScreen()
+{
+	PlayAgainOverlay->SetVisibility(ESlateVisibility::Visible);
+	ReturnToMainMenuOverlay->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UPlayerCharacterHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -56,5 +60,7 @@ void UPlayerCharacterHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaT
 		}
 	}
 }
+
+
 
 

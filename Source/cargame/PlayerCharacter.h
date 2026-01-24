@@ -115,6 +115,12 @@ public:
 	void UpdateRoundStartTimerUI(float NewTime);
 
 	void StartRoundUITween();
+	
+	void ChangeRoundIcon(int Round);
+	
+	void Die();
+	
+	void SetupGameOverScreen();
 
 protected:
 	void HandleInteractions();
