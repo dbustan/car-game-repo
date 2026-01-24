@@ -14,13 +14,13 @@ ACar::ACar()
 	PrimaryActorTick.bCanEverTick = true;
 	CarScene = CreateDefaultSubobject<USceneComponent>(TEXT("CarRoot"));
 	CarScene->SetupAttachment(RootComponent);
+	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Car Skeletal Mesh"));
+	SkeletalMesh->SetupAttachment(CarScene);
 	CarCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("CarCollider"));
-	CarCollision->SetupAttachment(CarScene);
+	CarCollision->SetupAttachment(SkeletalMesh);
 	CarCollision->SetCollisionResponseToAllChannels(ECR_Ignore);
 	CarCollision->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
 	CarCollision->OnComponentBeginOverlap.AddDynamic(this, &ACar::KillPlayer);
-	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Car Skeletal Mesh"));
-	SkeletalMesh->SetupAttachment(CarScene);
 }
 
 // Called when the game starts or when spawned

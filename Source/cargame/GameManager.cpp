@@ -62,6 +62,10 @@ void AGameManager::Tick(float DeltaTime)
 		FText SecText = FText::AsNumber(JustSeconds, &Options);
 		FText MsText = FText::AsNumber(Milliseconds, &Options);
 		PlayerActor->UpdateTimerUI(FText::Format(INVTEXT("{0}:{1}"), SecText, MsText));
+	} else if (RoundTimer <= 0 && TimerStarted)
+	{
+		TimerStarted = false;
+		LostGame();
 	}
 	
 }

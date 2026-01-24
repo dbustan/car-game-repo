@@ -40,7 +40,7 @@ void ACarSpawner::HandleTemplate(int Round)
 	StartPos = this->GetActorLocation();
 	EndPos = StartPos + StartPos.DownVector * 1000;
 	if (GetWorld()->LineTraceSingleByChannel(Hit, StartPos, EndPos, ECC_Visibility)) {
-		DrawDebugLine(GetWorld(), StartPos, EndPos, FColor::Emerald, true, -1,  0, 10);
+		// DrawDebugLine(GetWorld(), StartPos, EndPos, FColor::Emerald, true, -1,  0, 10);
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Instigator = NULL;
 		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
