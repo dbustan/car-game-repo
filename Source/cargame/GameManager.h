@@ -22,14 +22,19 @@ protected:
 	FVector CarSpawnerLocation = FVector(-240.0, 130.0, 170.0);
 	FTimerHandle CarMovementTimer;
 	FTimerHandle PlayerMovementTimer;
+	FTimerHandle RoundStartTimer;
+	bool TimerStarted = false;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game")
 	float CurrentGameDifficulty;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CarSpawner")
 	float CarSpawnerOffset;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game")
 	int TotalRounds;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
-	float TimeBetweenRounds;
+	float RoundTimer;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game")
+	float SetupTimer;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
 	int CurrentRound = 1;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CarSpawner")
@@ -57,6 +62,7 @@ private:
 	void EndRound(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	void StartRound();
+	void StartRoundTimer();
 	void StartMovement();
 	/*void PlayerSpawnInitialization();*/
 };

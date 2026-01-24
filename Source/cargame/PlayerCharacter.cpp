@@ -43,6 +43,9 @@ void APlayerCharacter::BeginPlay()
 	{
 		PlayerHUD = CreateWidget<UPlayerCharacterHUD>(GetWorld()->GetFirstPlayerController(),PlayerHUDBP);
 		PlayerHUD->AddToPlayerScreen();
+		PlayerHUD->InitialCastToMoveRoundEmoji();
+		UpdateRoundStartTimerUI(3);
+		StartRoundUITween();
 	}
 	/*SpawnPhone();*/
 }
@@ -94,6 +97,36 @@ void APlayerCharacter::EnablePlayerMovement()
 {
 	CanMove = true;
 }
+
+void APlayerCharacter::SetCurrentRoundUI(FText Round)
+{
+	PlayerHUD->SetRound(Round);
+}
+
+void APlayerCharacter::UpdateTimerUI(FText NewTime)
+{
+	PlayerHUD->SetRoundTime(NewTime);
+}
+
+void APlayerCharacter::UpdateRoundStartTimerUI(float NewTime)
+{
+	if (PlayerHUD)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("it works?"));
+		PlayerHUD->SetRoundStartTimer(NewTime);
+	}
+	
+}
+
+void APlayerCharacter::StartRoundUITween()
+{
+	if (PlayerHUD)
+	{
+		PlayerHUD->RunRoundBaseAnimation();
+	}
+	
+}
+
 
 void APlayerCharacter::HandleInteractions()
 {

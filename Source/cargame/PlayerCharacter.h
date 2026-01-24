@@ -106,9 +106,19 @@ public:
 	void SetCanMove(bool NewCanMove);
 
 	void EnablePlayerMovement();
+
+	void SetCurrentRoundUI(FText Round);
+
+	void UpdateTimerUI(FText NewTime);
+
+	//For tween animation of round start
+	void UpdateRoundStartTimerUI(float NewTime);
+
+	void StartRoundUITween();
+
 protected:
 	void HandleInteractions();
-
+	
 	void HandleDefaultMovement();
 
 	

@@ -12,7 +12,7 @@ AGameManager::AGameManager()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	RoundEndCollider = CreateDefaultSubobject<UBoxComponent>(TEXT("RoundEnd"));
-	RoundEndCollider->SetupAttachment(RoundEndCollider);
+	RoundEndCollider->SetupAttachment(RootComponent);
 	RoundEndCollider->SetCollisionResponseToAllChannels(ECR_Ignore);
 	RoundEndCollider->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	RoundEndCollider->OnComponentBeginOverlap.AddDynamic(this, &AGameManager::EndRound);
@@ -25,6 +25,9 @@ void AGameManager::BeginPlay()
 	CarSpawnerInitialization();
 	InitPlayer();
 	CurrentRound = 1;
+	SetupTimer = 3.0f;
+	RoundTimer = 10.0f;
+	
 	FVector PlayerLocation = PlayerActor->GetActorLocation();
 	FVector CurrentCarSpawnerLoc = CarSpawnerActor->GetActorLocation();
 	FVector NewCarSpawnerLoc = FVector(CurrentCarSpawnerLoc.X, PlayerLocation.Y + CarSpawnerOffset, CurrentCarSpawnerLoc.Z);
@@ -49,6 +52,19 @@ void AGameManager::Tick(float DeltaTime)
 		FVector RoundEndLocation = FVector(NewCarSpawnerLoc.X, LastPlacedCarLocation.Y - 150, LastPlacedCarLocation.Z);
 		RoundEndCollider->SetWorldLocation(RoundEndLocation);
 	}
+	
+	if (RoundTimer > 0 && TimerStarted)
+	{
+		RoundTimer -= DeltaTime;
+		int32 JustSeconds = FMath::FloorToInt(RoundTimer);
+		int32 Milliseconds = FMath::FloorToInt((RoundTimer - JustSeconds) * 100);
+		FNumberFormattingOptions Options;
+		Options.MinimumIntegralDigits = 2;
+		FText SecText = FText::AsNumber(JustSeconds, &Options);
+		FText MsText = FText::AsNumber(Milliseconds, &Options);
+		PlayerActor->UpdateTimerUI(FText::Format(INVTEXT("{0}:{1}"), SecText, MsText));
+	}
+	
 }
 
 void AGameManager::CarSpawnerInitialization()
@@ -77,7 +93,16 @@ void AGameManager::EndRound(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 	CarSpawnerActor->DestroyAllInfo();
 	CurrentRound++;
 	StartRound();
-	// UE_LOG(LogTemp, Warning, TEXT("Last Placed Car Name: %s"), *LastPlacedCar->GetName());
+	RoundTimer = 10.0f;
+	int32 JustSeconds = FMath::FloorToInt(RoundTimer);
+	int32 Milliseconds = FMath::FloorToInt((RoundTimer - JustSeconds) * 100);
+	FNumberFormattingOptions Options;
+	Options.MinimumIntegralDigits = 2;
+	FText SecText = FText::AsNumber(JustSeconds, &Options);
+	FText MsText = FText::AsNumber(Milliseconds, &Options);
+	PlayerActor->UpdateTimerUI(FText::Format(INVTEXT("{0}:{1}"), SecText, MsText));
+	TimerStarted = false;
+	
 }
 
 void AGameManager::StartRound()
@@ -85,13 +110,24 @@ void AGameManager::StartRound()
 	CarSpawnerActor->HandleTemplate(CurrentRound);
 	LastPlacedCar = CarSpawnerActor->GetLastCar();
 	PlayerActor->SetCanMove(false);
+	if (CurrentRound != 1)
+	{
+		PlayerActor->UpdateRoundStartTimerUI(SetupTimer);
+		PlayerActor->StartRoundUITween();
+	}
 	StartMovement();
+}
+
+void AGameManager::StartRoundTimer()
+{
+	TimerStarted = true;
 }
 
 void AGameManager::StartMovement()
 {
-	GetWorldTimerManager().SetTimer(CarMovementTimer, CarSpawnerActor, &ACarSpawner::StartCarMovement, TimeBetweenRounds, false);
-	GetWorldTimerManager().SetTimer(PlayerMovementTimer, PlayerActor, &APlayerCharacter::EnablePlayerMovement, TimeBetweenRounds, false);
+	GetWorldTimerManager().SetTimer(CarMovementTimer, CarSpawnerActor, &ACarSpawner::StartCarMovement, SetupTimer, false);
+	GetWorldTimerManager().SetTimer(PlayerMovementTimer, PlayerActor, &APlayerCharacter::EnablePlayerMovement, SetupTimer, false);
+	GetWorldTimerManager().SetTimer(RoundStartTimer, this, &AGameManager::StartRoundTimer, SetupTimer, false);
 }
 
 
