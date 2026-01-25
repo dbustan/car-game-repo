@@ -176,7 +176,7 @@ void APlayerCharacter::HandleDefaultMovement()
 			Acceleration = FMath::Clamp(Acceleration, 0, 1);
 			CharacterMovementComponent->MaxWalkSpeed = FMath::Lerp(DefaultSpeed, MaxSpeed, Acceleration);
 			AddMovementInput(GetActorForwardVector(), true);
-			UE_LOG(LogTemp, Warning, TEXT("%f: Max walk speed"), CharacterMovementComponent->MaxWalkSpeed);
+			// UE_LOG(LogTemp, Warning, TEXT("%f: Max walk speed"), CharacterMovementComponent->MaxWalkSpeed);
 		}
 	}
 	

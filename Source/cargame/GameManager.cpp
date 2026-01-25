@@ -24,6 +24,8 @@ void AGameManager::BeginPlay()
 	Super::BeginPlay();
 	CarSpawnerInitialization();
 	InitPlayer();
+	InitSound();
+	
 	CurrentRound = 1;
 	SetupTimer = 3.0f;
 	RoundTimer = 10.0f;
@@ -89,8 +91,18 @@ void AGameManager::InitPlayer()
 	PlayerActor->SetPlayerMaxSpeed(CurrentGameDifficulty);
 }
 
+void AGameManager::InitSound()
+{
+	UGameInstance * GeneralGameInstance = GetWorld()->GetGameInstance();
+	MyGameInstance = Cast<UWindowsGameInstance>(GeneralGameInstance);
+	if (MyGameInstance)
+	{
+		MyGameInstance->PlayMusic(0.0f, 0.0f, GameSong);
+	}
+}
+
 void AGameManager::EndRound(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                            UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	// UE_LOG(LogTemp, Error, TEXT("Player End"));
 	CarSpawnerActor->DestroyAllInfo();

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "CarSpawner.h"
+#include "WindowsGameInstance.h"
 #include  "Car.h"
 #include "PlayerCharacter.h"
 #include "GameManager.generated.h"
@@ -25,6 +26,10 @@ protected:
 	FTimerHandle RoundStartTimer;
 	bool TimerStarted = false;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
+	USoundBase* GameSong;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
+	class UWindowsGameInstance* MyGameInstance;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game")
 	float CurrentGameDifficulty;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CarSpawner")
@@ -57,6 +62,7 @@ public:
 private:
 	void CarSpawnerInitialization();
 	void InitPlayer();
+	void InitSound();
 	UFUNCTION()
 	void EndRound(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
