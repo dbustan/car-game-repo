@@ -138,7 +138,7 @@ ACar* ACarSpawner::GetLastCar()
 	
 	if (LastCar)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Last Car %s"), *LastCar->GetName());
+		UE_LOG(LogTemp, Error, TEXT("Last Car: %s"), *LastCar->GetName());
 		return LastCar;
 	} else
 	{
@@ -182,7 +182,7 @@ void ACarSpawner::StartCarMovement()
 	{
 		if (Car)
 		{
-			UE_LOG(LogTemp, Error, TEXT("Car %s"), *Car->GetName());
+			// UE_LOG(LogTemp, Error, TEXT(" %s"), *Car->GetName());
 			Car->SetMoving(true);
 		}
 	}
