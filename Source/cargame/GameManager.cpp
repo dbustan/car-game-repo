@@ -156,7 +156,8 @@ void AGameManager::LostGame()
 	PlayerActor->SetCanMove(false);
 	TimerStarted = false;
 	PlayerActor->UpdateTimerUI(FText::FromString("Game Over"));
-	PlayerActor->SetupGameOverScreen();
+	PlayerActor->SetupGameOver();
+	MyGameInstance->PlaySound(DeathSound, 1.0f);
 }
 
 

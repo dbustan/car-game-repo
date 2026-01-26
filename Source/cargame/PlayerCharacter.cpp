@@ -12,6 +12,8 @@ APlayerCharacter::APlayerCharacter()
 	MotorcycleBase = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MotorcycleBase"));
 	MotorcycleWheel = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MotorcycleWheel"));
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("PlayerCam"));
+	DeathParticlesComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("DeathParticles"));
+	DeathParticlesComponent->SetupAttachment(RootComponent);
 	Camera->SetupAttachment(RootComponent);
 	MotorcycleBase->SetupAttachment(RootComponent);
 	MotorcycleWheel->SetupAttachment(RootComponent);
@@ -39,6 +41,12 @@ void APlayerCharacter::BeginPlay()
 	DefaultSpeed = 200.0f;
 	CharacterMovementComponent->MaxWalkSpeed = DefaultSpeed;
 	MaxSpeed = 2000.0f;
+	
+	if (UGameInstance* GameInstance = GetGameInstance())
+	{
+		WindowsGameInstance = Cast<UWindowsGameInstance>(GameInstance);
+	}
+	 WindowsGameInstance->PlaySound(SpeedSound, DefaultPlaybackSpeed);
 	if (PlayerHUDBP)
 	{
 		PlayerHUD = CreateWidget<UPlayerCharacterHUD>(GetWorld()->GetFirstPlayerController(),PlayerHUDBP);
@@ -136,8 +144,12 @@ void APlayerCharacter::ChangeRoundIcon(int Round)
 
 
 
-void APlayerCharacter::SetupGameOverScreen()
+void APlayerCharacter::SetupGameOver()
 {
+	if (DeathParticlesComponent)
+	{
+		DeathParticlesComponent->SetActive(true);
+	}
 	PlayerHUD->ActivateGameOverScreen();
 	UpdateTimerUI(FText::FromString("Game Over"));
 	PlayerController->bShowMouseCursor = true;
@@ -175,7 +187,10 @@ void APlayerCharacter::HandleDefaultMovement()
 			Acceleration -= GetWorld()->GetDeltaSeconds();
 			Acceleration = FMath::Clamp(Acceleration, 0, 1);
 			CharacterMovementComponent->MaxWalkSpeed = FMath::Lerp(DefaultSpeed, MaxSpeed, Acceleration);
+			CurrentPlaybackSpeed = FMath::Lerp(DefaultPlaybackSpeed, MaxPlaybackSpeed, Acceleration);
+			WindowsGameInstance->PlaySound(SpeedSound, CurrentPlaybackSpeed);
 			AddMovementInput(GetActorForwardVector(), true);
+			
 			// UE_LOG(LogTemp, Warning, TEXT("%f: Max walk speed"), CharacterMovementComponent->MaxWalkSpeed);
 		}
 	}
@@ -189,6 +204,8 @@ void APlayerCharacter::SpeedUp(const FInputActionValue& InputValue) {
 		Acceleration += GetWorld()->GetDeltaSeconds();
 		Acceleration = FMath::Clamp(Acceleration, 0, 1);
 		CharacterMovementComponent->MaxWalkSpeed = FMath::Lerp(DefaultSpeed, MaxSpeed, Acceleration);
+		CurrentPlaybackSpeed = FMath::Lerp(DefaultPlaybackSpeed, MaxPlaybackSpeed, Acceleration);
+		WindowsGameInstance->PlaySound(SpeedSound, CurrentPlaybackSpeed);
 		AddMovementInput(GetActorForwardVector(), InputValue.Get<bool>());
 	}
 	

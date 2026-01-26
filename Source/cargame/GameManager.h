@@ -29,6 +29,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
 	USoundBase* GameSong;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
+	USoundBase* DeathSound;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")
 	class UWindowsGameInstance* MyGameInstance;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game")
 	float CurrentGameDifficulty;

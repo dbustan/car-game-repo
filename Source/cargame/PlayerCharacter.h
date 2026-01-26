@@ -14,6 +14,8 @@
 #include "PlayerCharacterHUD.h"
 #include "Blueprint/UserWidget.h"
 #include "Interactables.h"
+#include "NiagaraComponent.h"
+#include "WindowsGameInstance.h"
 #include "Engine/World.h"
 #include "PlayerCharacter.generated.h"
 UCLASS()
@@ -68,9 +70,15 @@ protected:
 	bool HasInput;
 	bool CanMove;
 	UPROPERTY(EditDefaultsOnly)
-	//idk why its like this but this was the only way to spawn the phone
 	TSubclassOf<class APhone> PhoneToSpawn;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Death")
+	UNiagaraComponent* DeathParticlesComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
+	USoundBase* SpeedSound;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Audio")
+	UWindowsGameInstance * WindowsGameInstance;
 	/*
 	 * HUD
 	 */
@@ -80,6 +88,10 @@ protected:
 
 	UPROPERTY()
 	class UPlayerCharacterHUD* PlayerHUD;
+
+	float DefaultPlaybackSpeed = 1.0f;
+	float CurrentPlaybackSpeed = 0.0f;
+	float MaxPlaybackSpeed = 2.0f;
 public:
 	
 	APlayerCharacter();
@@ -120,7 +132,7 @@ public:
 	
 	void Die();
 	
-	void SetupGameOverScreen();
+	void SetupGameOver();
 
 protected:
 	void HandleInteractions();

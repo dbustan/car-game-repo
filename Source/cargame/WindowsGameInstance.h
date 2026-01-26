@@ -22,5 +22,5 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category="Audio")
 	void PlayMusic(float FadeOutOldSong, float FadeInNewSong, USoundBase* SongToPlay);
 	UFUNCTION(BlueprintImplementableEvent, Category="Audio")
-	void PlaySound(USoundBase* SoundToPlay);
+	void PlaySound(USoundBase* SoundToPlay, float PlaybackSpeed);
 };
