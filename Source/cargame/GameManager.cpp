@@ -157,12 +157,15 @@ void AGameManager::StartMovement()
 
 void AGameManager::LostGame()
 {
-	PlayerActor->SetCanMove(false);
-	TimerStarted = false;
-	PlayerDead = true;
-	PlayerActor->UpdateTimerUI(FText::FromString("Game Over"));
-	PlayerActor->SetupGameOver();
-	MyGameInstance->PlaySound(DeathSound, 1.0f);
+	if (!PlayerDead)
+	{
+		PlayerActor->SetCanMove(false);
+		TimerStarted = false;
+		PlayerDead = true;
+		PlayerActor->UpdateTimerUI(FText::FromString("Game Over"));
+		PlayerActor->SetupGameOver();
+		MyGameInstance->PlaySound(DeathSound, 1.0f);
+	}
 }
 
 

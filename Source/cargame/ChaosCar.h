@@ -18,6 +18,9 @@ protected:
 	FTimerHandle RotationTimer;
 	int RotationAmountLeft;
 	int RotationAmountRight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	USceneComponent* RootMovement;
+	FVector ChaosLocation;
 public:
 	AChaosCar();
 protected:

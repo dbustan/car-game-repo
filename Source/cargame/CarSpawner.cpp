@@ -55,7 +55,7 @@ void ACarSpawner::HandleTemplate(int Round)
 			Variations[Random]->GetChildrenComponents(false, SpawnPoints);
 			for (USceneComponent* SpawnPoint : SpawnPoints)
 			{
-				SpawnPoint->SetVisibility(true, true);
+				// SpawnPoint->SetVisibility(true, true);
 				HandleCarSpawning(SpawnPoint,Round);
 			}
 			
@@ -68,70 +68,95 @@ void ACarSpawner::HandleTemplate(int Round)
 void ACarSpawner::HandleCarSpawning(USceneComponent* SpawnPoint, int Round)
 {
 	// UE_LOG(LogTemp, Display, TEXT("Running"));
-	if (!LevelConfigTable) return;
-	
-	FString RowNameString = FString::FromInt(Round);
-	FName RowName = FName(*RowNameString);
-	FLevelConfigRow* LevelData = LevelConfigTable->FindRow<FLevelConfigRow>(RowName, TEXT("Level Context"));
-	ACar* CarActor;
-	if (LevelData)
+	// if (!LevelConfigTable) return;
+	//
+	// FString RowNameString = FString::FromInt(Round);
+	// FName RowName = FName(*RowNameString);
+	// FLevelConfigRow* LevelData = LevelConfigTable->FindRow<FLevelConfigRow>(RowName, TEXT("Level Context"));
+	ACar* CarActor = nullptr;
+	TSubclassOf<ACar> CarChosen = nullptr;
+	FName CarTag = SpawnPoint->ComponentTags[0];
+	if (AllCarsMap.Contains(CarTag))
 	{
-		TSubclassOf<ACar> CarChosen = ChooseCar(LevelData);
-		FVector Location;
-		if (CarChosen == AllCars[2] || CarChosen == AllCars[1])
-		{
-			Location = FVector(SpawnPoint->GetComponentLocation().X, SpawnPoint->GetComponentLocation().Y, SpawnPoint->GetComponentLocation().Z + 50);
-		} else
-		{
-			Location = SpawnPoint->GetComponentLocation();
-		}
-		CarActor = GetWorld()->SpawnActor<ACar>(CarChosen, Location, FRotator::ZeroRotator);
+		CarChosen = AllCarsMap[CarTag];
+	} else
+	{
+		CarChosen = AllCarsMap["Bentley"];
+	}
+	
+	if (CarChosen)
+	{
+		FVector CarLocation = SpawnPoint->GetComponentLocation();
+		CarActor = GetWorld()->SpawnActor<ACar>(CarChosen, CarLocation, FRotator::ZeroRotator);
 		CurrentlySpawnedCars.Add(CarActor);
 		CarActor->SetMoving(false);
 	}
-	else
+	if (SpawnPoint->ComponentTags.Num() > 1)
 	{
-		CarActor = nullptr;
-		UE_LOG(LogTemp, Error, TEXT("We done fucked up boy, Handle Car spawning doesn't work"));
+		if (CarActor)
+		{
+			LastCar = CarActor;
+		} 
 	}
-	
-	if (SpawnPoint->ComponentHasTag("Last"))
-	{
-		LastCar = CarActor;
-		UE_LOG(LogTemp, Error, TEXT("Last Car: %s"), *LastCar->GetName());
-	}
+	// if (LevelData)
+	// {
+	// 	TSubclassOf<ACar> CarChosen = ChooseCar(LevelData);
+	// 	FVector Location;
+	// 	if (CarChosen == AllCars[2] || CarChosen == AllCars[1])
+	// 	{
+	// 		Location = FVector(SpawnPoint->GetComponentLocation().X, SpawnPoint->GetComponentLocation().Y, SpawnPoint->GetComponentLocation().Z + BentChaosZOffset);
+	// 	} else
+	// 	{
+	// 		Location = SpawnPoint->GetComponentLocation();
+	// 	}
+	// 	
+	// 	CarActor = GetWorld()->SpawnActor<ACar>(CarChosen, Location, FRotator::ZeroRotator);
+	// 	CurrentlySpawnedCars.Add(CarActor);
+	// 	CarActor->SetMoving(false);
+	// }
+	// else
+	// {
+	// 	CarActor = nullptr;
+	// 	UE_LOG(LogTemp, Error, TEXT("We done fucked up boy, Handle Car spawning doesn't work"));
+	// }
+	//
+	// if (SpawnPoint->ComponentHasTag("Last"))
+	// {
+	// 	LastCar = CarActor;
+	// 	UE_LOG(LogTemp, Error, TEXT("Last Car: %s"), *LastCar->GetName());
+	// }
 	
 	
 }
 
-TSubclassOf<ACar> ACarSpawner::ChooseCar(FLevelConfigRow* LevelData)
-{
-	int TotalSum = 0;
-	int AllCarsCount = AllCars.Num();
-	for (int i = 0; i < AllCarsCount ; i++)
-	{
-		if (int32* CarWeight = LevelData->CarWeights.Find(AllCars[i]))
-		{
-			TotalSum += *CarWeight;
-		}
-	}
-	int Rand = FMath::RandRange(0, TotalSum);
-	for (int i = 0; i < AllCarsCount; i++)
-	{
-		if (int32* CarWeight = LevelData->CarWeights.Find(AllCars[i]))
-		{
-			if (Rand < *CarWeight)
-			{
-				return AllCars[i];
-			}
-			Rand -= *CarWeight;
-		}
-	}
-	
-	UE_LOG(LogTemp, Error, TEXT("Uh oh Choose Car CarSpawner does not work"));
-	return AllCars[2];
-	
-}
+// TSubclassOf<ACar> ACarSpawner::ChooseCar(FLevelConfigRow* LevelData)
+// {
+// 	int TotalSum = 0;
+// 	int AllCarsCount = AllCars.Num();
+// 	for (int i = 0; i < AllCarsCount ; i++)
+// 	{
+// 		if (int32* CarWeight = LevelData->CarWeights.Find(AllCars[i]))
+// 		{
+// 			TotalSum += *CarWeight;
+// 		}
+// 	}
+// 	int Rand = FMath::RandRange(0, TotalSum);
+// 	for (int i = 0; i < AllCarsCount; i++)
+// 	{
+// 		if (int32* CarWeight = LevelData->CarWeights.Find(AllCars[i]))
+// 		{
+// 			if (Rand < *CarWeight)
+// 			{
+// 				return AllCars[i];
+// 			}
+// 			Rand -= *CarWeight;
+// 		}
+// 	}
+// 	
+// 	UE_LOG(LogTemp, Error, TEXT("Uh oh Choose Car CarSpawner does not work"));
+// 	return AllCars[2];
+// 	
+// }
 
 ACar* ACarSpawner::GetLastCar()
 {
@@ -140,11 +165,8 @@ ACar* ACarSpawner::GetLastCar()
 	{
 		UE_LOG(LogTemp, Error, TEXT("Last Car: %s"), *LastCar->GetName());
 		return LastCar;
-	} else
-	{
-		return nullptr;
-	}
-	
+	} 
+	return nullptr;
 }
 
 void ACarSpawner::DestroyAllInfo()

@@ -5,7 +5,8 @@
 
 AChaosCar::AChaosCar()
 {
-	
+	// RootMovement = CreateDefaultSubobject<USceneComponent>("RootMovement");
+	// CarScene->SetupAttachment(RootMovement);
 }
 
 void AChaosCar::BeginPlay()
@@ -25,11 +26,11 @@ void AChaosCar::RotateCar()
 	if (RotationCount <= RotationAmountLeft)
 	{
 		NewRotation = FRotator(0, -10, 0);
-		this->AddActorLocalRotation(NewRotation);
+		CarScene->AddLocalRotation(NewRotation);
 	} else if (RotationCount <= RotationAmountRight)
 	{
 		NewRotation = FRotator(0, 10, 0);
-		this->AddActorLocalRotation(NewRotation);
+		CarScene->AddLocalRotation(NewRotation);
 	} else
 	{
 		RotationCount = 0;
@@ -40,6 +41,12 @@ void AChaosCar::RotateCar()
 void AChaosCar::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	// if (CanMove)
+	// {
+	// 	ChaosLocation = RootMovement->GetComponentLocation();
+	// 	ChaosLocation += RootMovement->GetForwardVector() * Speed * DeltaTime;
+	// 	RootMovement->SetWorldLocation(ChaosLocation);
+	// }
 	// FVector Location = GetActorLocation();
 	// Location += GetActorForwardVector() * Speed * DeltaTime;
 	// SetActorLocation(Location);

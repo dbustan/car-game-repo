@@ -28,23 +28,26 @@ class CARGAME_API ACarSpawner : public AActor
 protected:
 	UPROPERTY(EditAnywhere, Category = "Config")
 	UDataTable* LevelConfigTable;
-	UPROPERTY(EditDefaultsOnly)
-	TArray<TSubclassOf<ACar>> AllCars;
+	
 		
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CarSpawning")
 	FHitResult Hit;
 	FTimerHandle DestroyTemplateTimer;
 	UPROPERTY(EditDefaultsOnly)
 	FVector StartPos;
-
+	
 	UPROPERTY(EditDefaultsOnly)
 	FVector EndPos;
 	UPROPERTY(EditDefaultsOnly)
 	TArray<TSubclassOf<AActor>> AllRoundTemplates;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CarSpawning")
 	TArray<USceneComponent*> SpawnPoints;
+	UPROPERTY(EditDefaultsOnly, Category = "CarSpawning")
+	TMap<FName, TSubclassOf<ACar>> AllCarsMap;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CarSpawning")
 	AActor* RoundTemplateActor;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CarSpawning")
+	float BentChaosZOffset;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Round")
 	ACar* LastCar;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Round")
