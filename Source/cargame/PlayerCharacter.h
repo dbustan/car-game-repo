@@ -31,14 +31,11 @@ class CARGAME_API APlayerCharacter : public ACharacter
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EnhancedInput")
-	class UInputMappingContext* inputMapping;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EnhancedInput")
-	class UInputAction* InteractAction;
+	class UInputMappingContext* InputMapping;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EnhancedInput")
 	class UInputAction* SpeedUpAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EnhancedInput")
-	class UInputAction* SlowDownAction;
-	
+	class UInputAction* PauseAction;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "EnhancedInput")
 	class UInputAction* MouseInteractionCheck;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "PlayerBike")
@@ -69,6 +66,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
 	bool HasInput;
 	bool CanMove;
+	bool IsPaused;
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<class APhone> PhoneToSpawn;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Death")
@@ -88,7 +86,7 @@ protected:
 
 	UPROPERTY()
 	class UPlayerCharacterHUD* PlayerHUD;
-
+	
 	float DefaultPlaybackSpeed = 1.0f;
 	float CurrentPlaybackSpeed = 0.0f;
 	float MaxPlaybackSpeed = 2.0f;
@@ -139,5 +137,6 @@ protected:
 	
 	void HandleDefaultMovement();
 
+	void HandlePauseInput();
 	
 };

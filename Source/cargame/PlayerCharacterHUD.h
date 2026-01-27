@@ -1,5 +1,6 @@
   #pragma once
 #include "CoreMinimal.h"
+#include "WindowsGameInstance.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/CanvasPanelSlot.h"
 #include "Components/Overlay.h"
@@ -25,8 +26,11 @@ protected:
 	class UOverlay* PlayAgainOverlay;
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UOverlay* ReturnToMainMenuOverlay;
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UWidget* PauseHub;
 	UPROPERTY(VisibleAnywhere)
 	class UCanvasPanelSlot* RoundEmojiCanvasSlot;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RoundStartUI")
 	FVector2D RoundStartPosition;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RoundStartUI")
@@ -35,11 +39,15 @@ protected:
 	float CurrentRoundSetupTimer;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RoundStartUI")
 	TArray<UTexture2D*> RoundEmojis;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "RoundStartUI")
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "RoundStartUI")
+	UWindowsGameInstance* GameInstance;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sounds")
+	USoundBase* RoundWinSFX;
+	bool IsPaused = false;
 	bool CanRunAnim;
 	float NormalizedAlpha;
 	float MaxRoundSetupTimer;
+	int CurrentRound;
 	
 	
   public:
@@ -50,7 +58,9 @@ protected:
 	void SetRoundStartTimer(float NewTime);
 	void InitialCastToMoveRoundEmoji();
 	void ActivateGameOverScreen();
-	virtual void NativeTick ( const FGeometry& MyGeometry,
+	void SetPaused(bool NewPaused);
+	void SetGameInstance(UWindowsGameInstance* GameInst);
+	virtual void NativeTick (const FGeometry& MyGeometry,
 float InDeltaTime) override;
 	
 

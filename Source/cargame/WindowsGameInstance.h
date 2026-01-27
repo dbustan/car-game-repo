@@ -19,8 +19,12 @@ protected:
 	float CurrentMusicVolume;
 	float CurrentSoundVolume;
 public:
-	UFUNCTION(BlueprintImplementableEvent, Category="Audio")
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Audio")
 	void PlayMusic(float FadeOutOldSong, float FadeInNewSong, USoundBase* SongToPlay);
-	UFUNCTION(BlueprintImplementableEvent, Category="Audio")
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Audio")
 	void PlaySound(USoundBase* SoundToPlay, float PlaybackSpeed);
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Audio")
+	void StoreMusicVolume(float MusicVolume);
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable, Category="Audio")
+	void StoreAudioVolume(float AudioVolume);
 };

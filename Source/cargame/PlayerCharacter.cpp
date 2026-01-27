@@ -3,6 +3,8 @@
 
 #include "PlayerCharacter.h"
 
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 APlayerCharacter::APlayerCharacter()
 {
@@ -53,6 +55,7 @@ void APlayerCharacter::BeginPlay()
 		PlayerHUD->AddToPlayerScreen();
 		PlayerHUD->InitialCastToMoveRoundEmoji();
 		PlayerHUD->SetRoundNumEmojiText(1);
+		PlayerHUD->SetGameInstance(WindowsGameInstance);
 		UpdateRoundStartTimerUI(3);
 		StartRoundUITween();
 	}
@@ -83,13 +86,13 @@ void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 		PlayerController->bEnableMouseOverEvents = true;*/
 
 		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(pController->GetLocalPlayer())) {
-			Subsystem->AddMappingContext(inputMapping, 0);
+			Subsystem->AddMappingContext(InputMapping, 0);
 		}
 	}
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Triggered, this, &APlayerCharacter::SpeedUp);
 		EnhancedInputComponent->BindAction(SpeedUpAction, ETriggerEvent::Completed, this, &APlayerCharacter::ReturnToNormalSpeed);
-		
+		EnhancedInputComponent->BindAction(PauseAction, ETriggerEvent::Started, this, &APlayerCharacter::HandlePauseInput);
 	}
 }
 void APlayerCharacter::SetPlayerMaxSpeed(float CurrentGameSpeed)
@@ -194,6 +197,29 @@ void APlayerCharacter::HandleDefaultMovement()
 			// UE_LOG(LogTemp, Warning, TEXT("%f: Max walk speed"), CharacterMovementComponent->MaxWalkSpeed);
 		}
 	}
+	
+}
+
+void APlayerCharacter::HandlePauseInput()
+{
+	if (IsPaused)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Unpausing..."));
+		IsPaused = false;
+		
+	} else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Pausing..."));
+		IsPaused = true;
+		
+		// FInputModeGameAndUI InputMode;
+		
+		// PlayerController->SetInputMode(InputMode);
+	}
+	PlayerHUD->SetPaused(IsPaused);
+	PlayerController->bShowMouseCursor = IsPaused;
+	UGameplayStatics::SetGamePaused(GetWorld(), IsPaused);
+	
 	
 }
 

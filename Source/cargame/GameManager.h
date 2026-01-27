@@ -25,7 +25,7 @@ protected:
 	FTimerHandle PlayerMovementTimer;
 	FTimerHandle RoundStartTimer;
 	bool TimerStarted = false;
-	
+	bool PlayerDead = false;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")
 	USoundBase* GameSong;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Audio")

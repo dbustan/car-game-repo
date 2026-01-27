@@ -122,21 +122,25 @@ void AGameManager::EndRound(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 
 void AGameManager::StartRound()
 {
-	CarSpawnerActor->HandleTemplate(CurrentRound);
-	LastPlacedCar = CarSpawnerActor->GetLastCar();
-	PlayerActor->SetCanMove(false);
-	if (CurrentRound != 1)
+	if (!PlayerDead)
 	{
-		PlayerActor->UpdateRoundStartTimerUI(SetupTimer);
-		PlayerActor->StartRoundUITween();
-		PlayerActor->ChangeRoundIcon(CurrentRound);
+		CarSpawnerActor->HandleTemplate(CurrentRound);
+		LastPlacedCar = CarSpawnerActor->GetLastCar();
+		PlayerActor->SetCanMove(false);
+		if (CurrentRound != 1)
+		{
+			PlayerActor->ChangeRoundIcon(CurrentRound);
+			PlayerActor->UpdateRoundStartTimerUI(SetupTimer);
+			PlayerActor->StartRoundUITween();
+		
+		}
+		TArray<ACar*> AllCars = CarSpawnerActor->GetAllCarsSpawned();
+		for (ACar* Car : AllCars)
+		{
+			Car->OnTargetHit.AddDynamic(this, &AGameManager::LostGame);
+		}
+		StartMovement();
 	}
-	TArray<ACar*> AllCars = CarSpawnerActor->GetAllCarsSpawned();
-	for (ACar* Car : AllCars)
-	{
-		Car->OnTargetHit.AddDynamic(this, &AGameManager::LostGame);
-	}
-	StartMovement();
 }
 
 void AGameManager::StartRoundTimer()
@@ -155,6 +159,7 @@ void AGameManager::LostGame()
 {
 	PlayerActor->SetCanMove(false);
 	TimerStarted = false;
+	PlayerDead = true;
 	PlayerActor->UpdateTimerUI(FText::FromString("Game Over"));
 	PlayerActor->SetupGameOver();
 	MyGameInstance->PlaySound(DeathSound, 1.0f);
