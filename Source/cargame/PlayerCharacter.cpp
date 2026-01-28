@@ -59,6 +59,8 @@ void APlayerCharacter::BeginPlay()
 		UpdateRoundStartTimerUI(3);
 		StartRoundUITween();
 	}
+	PlayerController->bShowMouseCursor = false;
+	PlayerController->bEnableClickEvents = false;
 	/*SpawnPhone();*/
 }
 
@@ -147,7 +149,7 @@ void APlayerCharacter::ChangeRoundIcon(int Round)
 
 
 
-void APlayerCharacter::SetupGameOver()
+void APlayerCharacter::SetUpGameOver()
 {
 	if (DeathParticlesComponent)
 	{
@@ -155,6 +157,15 @@ void APlayerCharacter::SetupGameOver()
 	}
 	PlayerHUD->ActivateGameOverScreen();
 	UpdateTimerUI(FText::FromString("Game Over"));
+	PlayerController->bShowMouseCursor = true;
+	PlayerController->bEnableClickEvents = true;
+	PlayerLost = true;
+}
+
+void APlayerCharacter::SetUpWin()
+{
+	PlayerHUD->ActivateWinScreen();
+	UpdateTimerUI(FText::FromString("You Win!"));
 	PlayerController->bShowMouseCursor = true;
 	PlayerController->bEnableClickEvents = true;
 }
@@ -202,23 +213,26 @@ void APlayerCharacter::HandleDefaultMovement()
 
 void APlayerCharacter::HandlePauseInput()
 {
-	if (IsPaused)
+	if (!PlayerLost)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Unpausing..."));
-		IsPaused = false;
+		if (IsPaused)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Unpausing..."));
+			IsPaused = false;
 		
-	} else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Pausing..."));
-		IsPaused = true;
+		} else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Pausing..."));
+			IsPaused = true;
 		
-		// FInputModeGameAndUI InputMode;
+			// FInputModeGameAndUI InputMode;
 		
-		// PlayerController->SetInputMode(InputMode);
+			// PlayerController->SetInputMode(InputMode);
+		}
+		PlayerHUD->SetPaused(IsPaused);
+		PlayerController->bShowMouseCursor = IsPaused;
+		UGameplayStatics::SetGamePaused(GetWorld(), IsPaused);
 	}
-	PlayerHUD->SetPaused(IsPaused);
-	PlayerController->bShowMouseCursor = IsPaused;
-	UGameplayStatics::SetGamePaused(GetWorld(), IsPaused);
 	
 	
 }

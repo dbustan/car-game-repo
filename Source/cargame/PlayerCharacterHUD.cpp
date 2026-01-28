@@ -57,6 +57,11 @@ void UPlayerCharacterHUD::ActivateGameOverScreen()
 	ReturnToMainMenuOverlay->SetVisibility(ESlateVisibility::Visible);
 }
 
+void UPlayerCharacterHUD::ActivateWinScreen()
+{
+	GameInstance->PlaySound(GameWinSFX, 1.0f);
+}
+
 void UPlayerCharacterHUD::SetPaused(bool NewPaused)
 {
 	IsPaused = NewPaused;

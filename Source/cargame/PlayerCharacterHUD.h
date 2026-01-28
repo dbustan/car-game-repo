@@ -43,6 +43,8 @@ protected:
 	UWindowsGameInstance* GameInstance;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sounds")
 	USoundBase* RoundWinSFX;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Sounds")
+	USoundBase* GameWinSFX;
 	bool IsPaused = false;
 	bool CanRunAnim;
 	float NormalizedAlpha;
@@ -58,6 +60,7 @@ protected:
 	void SetRoundStartTimer(float NewTime);
 	void InitialCastToMoveRoundEmoji();
 	void ActivateGameOverScreen();
+	void ActivateWinScreen();
 	void SetPaused(bool NewPaused);
 	void SetGameInstance(UWindowsGameInstance* GameInst);
 	virtual void NativeTick (const FGeometry& MyGeometry,

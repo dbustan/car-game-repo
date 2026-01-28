@@ -46,8 +46,6 @@ protected:
 	TMap<FName, TSubclassOf<ACar>> AllCarsMap;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CarSpawning")
 	AActor* RoundTemplateActor;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "CarSpawning")
-	float BentChaosZOffset;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Round")
 	ACar* LastCar;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Round")

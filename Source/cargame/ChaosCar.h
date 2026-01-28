@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Car.h"
+#include "Components/StaticMeshComponent.h"
 #include "ChaosCar.generated.h"
 
 /**
@@ -18,8 +19,8 @@ protected:
 	FTimerHandle RotationTimer;
 	int RotationAmountLeft;
 	int RotationAmountRight;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
-	USceneComponent* RootMovement;
+	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	// UStaticMeshComponent * RootMovement;
 	FVector ChaosLocation;
 public:
 	AChaosCar();

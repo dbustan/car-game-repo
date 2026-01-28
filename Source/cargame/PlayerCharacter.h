@@ -90,6 +90,7 @@ protected:
 	float DefaultPlaybackSpeed = 1.0f;
 	float CurrentPlaybackSpeed = 0.0f;
 	float MaxPlaybackSpeed = 2.0f;
+	bool PlayerLost = false;
 public:
 	
 	APlayerCharacter();
@@ -130,7 +131,9 @@ public:
 	
 	void Die();
 	
-	void SetupGameOver();
+	void SetUpGameOver();
+
+	void SetUpWin();
 
 protected:
 	void HandleInteractions();

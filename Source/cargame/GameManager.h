@@ -50,6 +50,8 @@ protected:
 	class UBoxComponent* RoundEndCollider;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Game")
 	class APlayerCharacter* PlayerActor;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Game")
+	int MAX_ROUNDS = 10;
 	
 public:	
 	// Sets default values for this actor's properties

@@ -5,8 +5,9 @@
 
 AChaosCar::AChaosCar()
 {
-	// RootMovement = CreateDefaultSubobject<USceneComponent>("RootMovement");
-	// CarScene->SetupAttachment(RootMovement);
+	// RootMovement = CreateDefaultSubobject<UStaticMeshComponent>("RootMovement");
+	// RootMovement->SetupAttachment(RootComponent);
+	// CarScene->SetupAttachment(RootComponent);
 }
 
 void AChaosCar::BeginPlay()
@@ -50,5 +51,5 @@ void AChaosCar::Tick(float DeltaTime)
 	// FVector Location = GetActorLocation();
 	// Location += GetActorForwardVector() * Speed * DeltaTime;
 	// SetActorLocation(Location);
-	// UE_LOG(LogTemp, Warning, TEXT("Location: %s"), *Location.ToString());
+	UE_LOG(LogTemp, Warning, TEXT("Location: %s"), *Location.ToString());
 }

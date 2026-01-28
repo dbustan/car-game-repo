@@ -36,6 +36,7 @@ void ACarSpawner::Tick(float DeltaTime)
 
 void ACarSpawner::HandleTemplate(int Round)
 {
+	UE_LOG(LogTemp, Warning, TEXT("%d"), Round);
 	TSubclassOf<AActor> CurrentRoundTemplate = AllRoundTemplates[Round-1];
 	StartPos = this->GetActorLocation();
 	EndPos = StartPos + StartPos.DownVector * 1000;

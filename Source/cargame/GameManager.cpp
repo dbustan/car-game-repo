@@ -107,23 +107,32 @@ void AGameManager::EndRound(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 	// UE_LOG(LogTemp, Error, TEXT("Player End"));
 	CarSpawnerActor->DestroyAllInfo();
 	CurrentRound++;
-	StartRound();
-	RoundTimer = 10.0f;
-	int32 JustSeconds = FMath::FloorToInt(RoundTimer);
-	int32 Milliseconds = FMath::FloorToInt((RoundTimer - JustSeconds) * 100);
-	FNumberFormattingOptions Options;
-	Options.MinimumIntegralDigits = 2;
-	FText SecText = FText::AsNumber(JustSeconds, &Options);
-	FText MsText = FText::AsNumber(Milliseconds, &Options);
-	PlayerActor->UpdateTimerUI(FText::Format(INVTEXT("{0}:{1}"), SecText, MsText));
-	TimerStarted = false;
-	
+	if (CurrentRound > MAX_ROUNDS)
+	{
+		PlayerActor->SetCanMove(false);
+		TimerStarted = false;
+		PlayerActor->UpdateTimerUI(FText::FromString("You Win!"));
+		PlayerActor->SetUpWin();
+	} else
+	{
+		StartRound();
+		RoundTimer = 10.0f;
+		int32 JustSeconds = FMath::FloorToInt(RoundTimer);
+		int32 Milliseconds = FMath::FloorToInt((RoundTimer - JustSeconds) * 100);
+		FNumberFormattingOptions Options;
+		Options.MinimumIntegralDigits = 2;
+		FText SecText = FText::AsNumber(JustSeconds, &Options);
+		FText MsText = FText::AsNumber(Milliseconds, &Options);
+		PlayerActor->UpdateTimerUI(FText::Format(INVTEXT("{0}:{1}"), SecText, MsText));
+		TimerStarted = false;
+	}
 }
 
 void AGameManager::StartRound()
 {
 	if (!PlayerDead)
 	{
+		
 		CarSpawnerActor->HandleTemplate(CurrentRound);
 		LastPlacedCar = CarSpawnerActor->GetLastCar();
 		PlayerActor->SetCanMove(false);
@@ -162,8 +171,8 @@ void AGameManager::LostGame()
 		PlayerActor->SetCanMove(false);
 		TimerStarted = false;
 		PlayerDead = true;
-		PlayerActor->UpdateTimerUI(FText::FromString("Game Over"));
-		PlayerActor->SetupGameOver();
+		// PlayerActor->UpdateTimerUI(FText::FromString("Game Over"));
+		PlayerActor->SetUpGameOver();
 		MyGameInstance->PlaySound(DeathSound, 1.0f);
 	}
 }
