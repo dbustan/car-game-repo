@@ -91,6 +91,7 @@ protected:
 	float CurrentPlaybackSpeed = 0.0f;
 	float MaxPlaybackSpeed = 2.0f;
 	bool PlayerLost = false;
+	bool AltTabDetected = false;
 public:
 	
 	APlayerCharacter();
@@ -140,6 +141,8 @@ protected:
 	
 	void HandleDefaultMovement();
 
+	bool GetViewportFocus();
+	
 	void HandlePauseInput();
 	
 };

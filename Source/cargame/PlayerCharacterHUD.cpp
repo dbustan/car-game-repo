@@ -60,6 +60,8 @@ void UPlayerCharacterHUD::ActivateGameOverScreen()
 void UPlayerCharacterHUD::ActivateWinScreen()
 {
 	GameInstance->PlaySound(GameWinSFX, 1.0f);
+	PlayAgainOverlay->SetVisibility(ESlateVisibility::Visible);
+	ReturnToMainMenuOverlay->SetVisibility(ESlateVisibility::Visible);
 }
 
 void UPlayerCharacterHUD::SetPaused(bool NewPaused)
@@ -79,6 +81,8 @@ void UPlayerCharacterHUD::SetGameInstance(UWindowsGameInstance* GameInst)
 {
 	GameInstance = GameInst; 
 }
+
+
 
 void UPlayerCharacterHUD::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {

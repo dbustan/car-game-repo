@@ -72,6 +72,15 @@ void APlayerCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	HandleInteractions();
 	HandleDefaultMovement();
+	GetViewportFocus();
+	if (!GetViewportFocus() && !AltTabDetected)
+	{
+		HandlePauseInput();
+		AltTabDetected = true;
+	} else
+	{
+		AltTabDetected = false;
+	}
 	
 }
 
@@ -211,8 +220,19 @@ void APlayerCharacter::HandleDefaultMovement()
 	
 }
 
+bool APlayerCharacter::GetViewportFocus()
+{
+	if (GEngine)
+	{
+		bool isFocused = GEngine->GameViewport->Viewport->IsForegroundWindow();
+		return isFocused;
+	}
+	return true;
+}
+
 void APlayerCharacter::HandlePauseInput()
 {
+	
 	if (!PlayerLost)
 	{
 		if (IsPaused)
