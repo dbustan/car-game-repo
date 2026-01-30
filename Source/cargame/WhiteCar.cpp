@@ -23,12 +23,12 @@ void AWhiteCar::BeginPlay()
 void AWhiteCar::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	IsGoingIn = ShouldHappen(100);
+	IsGoingIn = ShouldHappen(45);
 	if (IsGoingIn)
 	{
 		// UE_LOG(LogTemp, Warning, TEXT("Going in"));
 		RotateCar();
-		GetWorldTimerManager().SetTimer(RotationTimer, this, &AWhiteCar::RotateCar, 0.5, false);
+		GetWorldTimerManager().SetTimer(RotationTimer, this, &AWhiteCar::RotateCar, 0.3, false);
 	}
 }
 bool AWhiteCar::ShouldHappen(int percentage)
@@ -43,8 +43,13 @@ void AWhiteCar::RotateCar()
 	{
 		FRotator NewRotation = FRotator(0, 10, 0);
 		this->AddActorLocalRotation(NewRotation);
-		GetWorldTimerManager().SetTimer(RotationTimer, this, &AWhiteCar::RotateCar, 0.5, false);
-	}
+		if (RotationCount == 2)
+		{
+			Speed = 1000;
+		}
+		GetWorldTimerManager().SetTimer(RotationTimer, this, &AWhiteCar::RotateCar, 0.3, false);
+	} 
+	
 	
 }
 
