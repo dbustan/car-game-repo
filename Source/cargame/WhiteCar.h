@@ -17,6 +17,12 @@ class CARGAME_API AWhiteCar : public ACar
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Car")
 	class UBoxComponent* PlayerDetection;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Goingin")
+	UStaticMeshComponent* ArrowSignal;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Goingin")
+	float PercentageChance = 45;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category= "Goingin")
+	float TimeForInitialRotation = 0.4f;
 	FTimerHandle RotationTimer;
 	bool IsGoingIn;
 	int RotationCount = 0;

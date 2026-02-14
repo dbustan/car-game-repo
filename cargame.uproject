@@ -21,8 +21,5 @@
 				"Editor"
 			]
 		}
-	],
-	"AdditionalPluginDirectories": [
-		"../Plugins/MaterialReparenter"
 	]
 }

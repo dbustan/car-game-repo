@@ -5,9 +5,11 @@
 
 AWhiteCar::AWhiteCar() 
 {
-	
+	ArrowSignal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SignalMesh"));
 	PlayerDetection = CreateDefaultSubobject<UBoxComponent>(TEXT("PlayerDetectionBox"));
 	PlayerDetection->SetupAttachment(CarScene);
+	ArrowSignal->SetupAttachment(CarScene);
+	ArrowSignal->SetVisibility(false);
 	PlayerDetection->SetCollisionResponseToAllChannels(ECR_Ignore);
 	PlayerDetection->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECR_Overlap);
 }
@@ -17,18 +19,17 @@ void AWhiteCar::BeginPlay()
     Super::BeginPlay();
 	PlayerDetection->OnComponentBeginOverlap.AddDynamic(this, &AWhiteCar::OverlapBegin);
 	Speed = 300.0f;
-	
+	IsGoingIn = ShouldHappen(PercentageChance);
 }
 
 void AWhiteCar::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 	int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	IsGoingIn = ShouldHappen(45);
+	
 	if (IsGoingIn)
 	{
-		// UE_LOG(LogTemp, Warning, TEXT("Going in"));
-		RotateCar();
-		GetWorldTimerManager().SetTimer(RotationTimer, this, &AWhiteCar::RotateCar, 0.3, false);
+		ArrowSignal->SetVisibility(true);
+		GetWorldTimerManager().SetTimer(RotationTimer, this, &AWhiteCar::RotateCar, TimeForInitialRotation, false);
 	}
 }
 bool AWhiteCar::ShouldHappen(int percentage)
